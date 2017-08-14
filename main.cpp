@@ -20,22 +20,40 @@
 #include "TPZGeoCube.h"
 
 
-// ******************* Zero and One D element *****************
+
+#include "TPZVTKGeoMesh.h"
+#include "pzbndcond.h"
+
+
+// ******************* (Geometry linear description: Zero and One D element) *****************
 
 void ZeroDElements();
 void OneDElements();
 
-// ******************* Two D element **************************
+// ******************* (Geometry linear description: Two D element) **************************
 
 void TwoDTriElements();
 void TwoDQuadElements();
 
-// ******************* Three D element ************************
+// ******************* (Geometry linear description: Three D element) ************************
 
 void ThreeDTetraElements();
 void ThreeDPyraElements();
 void ThreeDPrisElements();
 void ThreeDHexaElements();
+
+// ******************* (Create linear meshes: 1D) *******************************************
+
+TPZGeoMesh *CreateOneDGMesh(long num_el, REAL size_el);
+
+
+// ******************* (Create linear meshes: 2D) *******************************************
+
+
+
+// ******************* (Create linear meshes: 3D) *******************************************
+
+
 
 
 int main() {
@@ -50,11 +68,28 @@ int main() {
     ThreeDPyraElements();
     ThreeDPrisElements();
     ThreeDHexaElements();
+    
+    
+    
+    
+    REAL domain = 1.;
+    long num_el = 2;
+    REAL size_el = domain/num_el;
+    
+    TPZGeoMesh *gmesh_OneD = CreateOneDGMesh(num_el, size_el);
+    
+    std::ofstream outgmesh("geomesh_OneD.txt");
+    gmesh_OneD->Print(outgmesh);
+
 
 
     
     return 0;
 }
+
+
+
+
 
 void ZeroDElements(){
     
@@ -664,4 +699,61 @@ void ThreeDHexaElements() {
     
 }
 
+// ************************************** Create linear meshes ***************************************
 
+TPZGeoMesh *CreateOneDGMesh(long num_el, REAL size_el)
+{
+    TPZGeoMesh * gmesh_OneD = new TPZGeoMesh; // Initilized of TPZGeoMesh class
+    
+    long geometry_dim = 1; // geometry dimension
+    std::string name("geomesh OneD"); // geometry name
+    
+    gmesh_OneD->SetName(name);
+    gmesh_OneD->SetDimension(geometry_dim);
+    
+    long num_nodes = num_el + 1; // Number of the nodes
+    gmesh_OneD->NodeVec().Resize(num_nodes); // Resize of the geometry mesh
+    
+    
+    int physical_id = 1; // Define id for material
+    int bc0 = -1; // Define id for left boundary condition
+    int bc1 = -2; // Define id for right boundary condition
+    
+    
+    for (long i = 0 ; i < num_nodes; i++)
+    {
+        const REAL valElem = i * size_el;
+        TPZVec <REAL> coord(3,0.);
+        coord[0] = valElem;
+        gmesh_OneD->NodeVec()[i].SetCoord(coord); // Set of cordinate on the vector
+        gmesh_OneD->NodeVec()[i].SetNodeId(i); // The id identification
+    }
+    
+    // Create Elements
+    TPZVec <long> Linear_topology(2); // Vector of the node index: One-dimensional element
+    TPZVec <long> point_topology(1); // Vector of the node index: Zero-dimensional element
+    long id; // What is this????
+    
+    
+    for (long iel = 0; iel < num_el; iel++)
+    {
+        const long inod_l = iel;
+        const long inod_r = iel + 1;
+        Linear_topology[0] = inod_l;
+        Linear_topology[1] = inod_r;
+        gmesh_OneD->CreateGeoElement(EOned, Linear_topology, physical_id, id);//Create one-dimensional element
+        gmesh_OneD->ElementVec()[id];
+    }
+    
+    // Left boundary condition
+    point_topology[0] = 0;
+    gmesh_OneD->CreateGeoElement(EPoint, point_topology, bc0, id);
+    
+    // Right boundary condition
+    point_topology[0] = num_nodes-1;
+    gmesh_OneD->CreateGeoElement(EPoint, point_topology, bc1, id);
+    
+    gmesh_OneD->BuildConnectivity(); // Construct mesh neighbor connectivity
+    
+    return gmesh_OneD;
+}
