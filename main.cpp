@@ -144,7 +144,7 @@ int main() {
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDQuad, vtkgmeshTwoDQuad);
 
     
-    // *******************
+    // ******************* (Create linear meshes: 3D) *******************************************
     
     REAL Lz = 1.;
     long nnodesthr = 25; // number of divition
