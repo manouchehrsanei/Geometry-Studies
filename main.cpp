@@ -63,6 +63,8 @@ TPZGeoMesh *CreateTwoDQuadGMesh(long nnodesqu, REAL Lx, REAL Ly);
 TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz);
 
 
+// ******************* (main of program) *******************************************
+
 
 int main() {
 
@@ -92,7 +94,7 @@ int main() {
     std::ofstream vtkgmeshOneDL("geomesh_OneDL.vtk");
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDL, vtkgmeshOneDL);
 
-    // -----------------------------------------
+    // --------------------------------------------------------
     
     
     TPZGeoMesh *gmesh_OneDNL = CreateOneDNLGMesh(num_el, size_el); // function to create the 1D geometric mesh
@@ -158,12 +160,10 @@ int main() {
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPri, vtkgmeshThreeDHexPri);
     
     
-    
-    
-    
-    
     return 0;
 }
+
+
 
 
 // ********************************************** functions *********************************************
@@ -1684,39 +1684,39 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     
     {
         
-        // 1st node
+        // 0th node
         coord[0] = Lx; // x coordinate
-        coord[1] = Ly/2; // Y coordinate
+        coord[1] = Ly; // Y coordinate
         coord[2] = 0.0; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[0].SetNodeId(0);
         gmesh_ThreeDHexPri->NodeVec()[0].SetCoord(coord);
         Hexahedron_topology[0] = 0;
         
-        // 2nd node
+        // 1st node
         coord[0] = Lx; // x coordinate
         coord[1] = Ly; // Y coordinate
-        coord[2] = 0.0; // Z coordinate
+        coord[2] = Lz/2; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[1].SetNodeId(1);
         gmesh_ThreeDHexPri->NodeVec()[1].SetCoord(coord);
         Hexahedron_topology[1] = 1;
         
-        // 3rd node
+        // 2nd node
         coord[0] = Lx; // x coordinate
-        coord[1] = Ly; // Y coordinate
+        coord[1] = Ly/2; // Y coordinate
         coord[2] = Lz/2; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[2].SetNodeId(2);
         gmesh_ThreeDHexPri->NodeVec()[2].SetCoord(coord);
         Hexahedron_topology[2] = 2;
         
-        // 4th node
+        // 3rd node
         coord[0] = Lx; // x coordinate
         coord[1] = Ly/2; // Y coordinate
-        coord[2] = Lz/2; // Z coordinate
+        coord[2] = 0.0; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[3].SetNodeId(3);
         gmesh_ThreeDHexPri->NodeVec()[3].SetCoord(coord);
         Hexahedron_topology[3] = 3;
         
-        // 5th node
+        // 4th node
         coord[0] = Lx/2; // x coordinate
         coord[1] = Ly; // Y coordinate
         coord[2] = 0.0; // Z coordinate
@@ -1724,7 +1724,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         gmesh_ThreeDHexPri->NodeVec()[4].SetCoord(coord);
         Hexahedron_topology[4] = 4;
         
-        // 6th node
+        // 5th node
         coord[0] = Lx/2; // x coordinate
         coord[1] = Ly; // Y coordinate
         coord[2] = Lz/2; // Z coordinate
@@ -1732,7 +1732,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         gmesh_ThreeDHexPri->NodeVec()[5].SetCoord(coord);
         Hexahedron_topology[5] = 5;
         
-        // 7th node
+        // 6th node
         coord[0] = Lx/2; // x coordinate
         coord[1] = Ly/2; // Y coordinate
         coord[2] = Lz/2; // Z coordinate
@@ -1740,7 +1740,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         gmesh_ThreeDHexPri->NodeVec()[6].SetCoord(coord);
         Hexahedron_topology[6] = 6;
         
-        // 8th node
+        // 7th node
         coord[0] = Lx/2; // x coordinate
         coord[1] = Ly/2; // Y coordinate
         coord[2] = 0.0; // Z coordinate
@@ -1812,10 +1812,10 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     {
         
         // 1st node
-        Hexahedron_topology[0] = 0;
+        Hexahedron_topology[0] = 3;
         
         // 2nd node
-        Hexahedron_topology[1] = 3;
+        Hexahedron_topology[1] = 2;
         
         // 3rd node
         coord[0] = Lx; // x coordinate
@@ -1865,7 +1865,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     {
         
         // 1st node
-        Hexahedron_topology[0] = 2;
+        Hexahedron_topology[0] = 1;
         
         // 2nd node
         coord[0] = Lx; // x coordinate
@@ -1884,7 +1884,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         Hexahedron_topology[2] = 17;
         
         // 4th node
-        Hexahedron_topology[3] = 3;
+        Hexahedron_topology[3] = 2;
         
         // 5th node
         Hexahedron_topology[4] = 9;
@@ -1917,37 +1917,37 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     {
         
         // 1st node
-        Prism_topology[0] = 3;
+        Prism_topology[0] = 17;
         
         // 2nd node
-        Prism_topology[1] = 17;
+        coord[0] = Lx/2; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = Lz; // Z coordinate
+        gmesh_ThreeDHexPri->NodeVec()[20].SetNodeId(20);
+        gmesh_ThreeDHexPri->NodeVec()[20].SetCoord(coord);
+        Prism_topology[1] = 20;
         
         // 3rd node
         coord[0] = Lx; // x coordinate
         coord[1] = 0.0; // Y coordinate
         coord[2] = Lz; // Z coordinate
-        gmesh_ThreeDHexPri->NodeVec()[20].SetNodeId(20);
-        gmesh_ThreeDHexPri->NodeVec()[20].SetCoord(coord);
-        Prism_topology[2] = 20;
-        
-        // 4th node
-        Prism_topology[3] = 12;
-        
-        // 5th node
-        coord[0] = Lx/2; // x coordinate
-        coord[1] = 0.0; // Y coordinate
-        coord[2] = Lz; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[21].SetNodeId(21);
         gmesh_ThreeDHexPri->NodeVec()[21].SetCoord(coord);
-        Prism_topology[4] = 21;
+        Prism_topology[2] = 21;
         
-        // 6th node
+        // 4th node
+        Prism_topology[3] = 2;
+        
+        // 5th node
         coord[0] = Lx/2; // x coordinate
         coord[1] = 0.0; // Y coordinate
         coord[2] = Lz/2; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[22].SetNodeId(22);
         gmesh_ThreeDHexPri->NodeVec()[22].SetCoord(coord);
-        Prism_topology[5] = 22;
+        Prism_topology[4] = 22;
+        
+        // 6th node
+        Prism_topology[5] = 12;
         
         new TPZGeoElRefPattern< pzgeom::TPZGeoPrism> (elementid, Prism_topology, physical_id, *gmesh_ThreeDHexPri);
     }
@@ -1956,7 +1956,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     {
         
         // 1st node
-        Prism_topology[0] = 6;
+        Prism_topology[0] = 17;
         
         // 2nd node
         coord[0] = Lx/2; // x coordinate
@@ -1967,13 +1967,13 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         Prism_topology[1] = 23;
         
         // 3rd node
-        Prism_topology[2] = 17;
+        Prism_topology[2] = 20;
         
         // 4th node
-        Prism_topology[3] = 3;
+        Prism_topology[3] = 2;
         
         // 5th node
-        Prism_topology[4] = 21;
+        Prism_topology[4] = 6;
         
         // 6th node
         Prism_topology[5] = 22;
@@ -1986,22 +1986,22 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     {
         
         // 1st node
-        Prism_topology[0] = 6;
+        Prism_topology[0] = 23;
         
         // 2nd node
-        Prism_topology[1] = 23;
+        Prism_topology[1] = 19;
         
         // 3rd node
-        Prism_topology[2] = 21;
+        Prism_topology[2] = 20;
         
         // 4th node
-        Prism_topology[3] = 22;
+        Prism_topology[3] = 6;
         
         // 5th node
         Prism_topology[4] = 10;
         
         // 6th node
-        Prism_topology[5] = 19;
+        Prism_topology[5] = 22;
         
         new TPZGeoElRefPattern< pzgeom::TPZGeoPrism> (elementid, Prism_topology, physical_id, *gmesh_ThreeDHexPri);
     }
@@ -2010,27 +2010,27 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     {
         
         // 1st node
-        Prism_topology[0] = 10;
+        Prism_topology[0] = 20;
         
         // 2nd node
         Prism_topology[1] = 19;
         
         // 3rd node
-        Prism_topology[2] = 21;
-        
-        // 4th node
-        Prism_topology[3] = 22;
-        
-        // 5th node
-        Prism_topology[4] = 14;
-        
-        // 6th node
         coord[0] = 0.0; // x coordinate
         coord[1] = 0.0; // Y coordinate
         coord[2] = Lz; // Z coordinate
         gmesh_ThreeDHexPri->NodeVec()[24].SetNodeId(24);
         gmesh_ThreeDHexPri->NodeVec()[24].SetCoord(coord);
-        Prism_topology[5] = 24;
+        Prism_topology[2] = 24;
+        
+        // 4th node
+        Prism_topology[3] = 22;
+        
+        // 5th node
+        Prism_topology[4] = 10;
+        
+        // 6th node
+        Prism_topology[5] = 14;
         
         new TPZGeoElRefPattern< pzgeom::TPZGeoPrism> (elementid, Prism_topology, physical_id, *gmesh_ThreeDHexPri);
         elementid++;
@@ -2058,20 +2058,34 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         new TPZGeoElRefPattern< pzgeom::TPZGeoLinear > (elementid,Linear_topology,bc_left,*gmesh_ThreeDHexPri);       elementid++;
     }
     
-    
+
     // ********************* boundary ****************
 
       // in front
     {
         {
             
+            Quadrilateral_topology[0] = 0;
+            
+            Quadrilateral_topology[1] = 1;
+
+            Quadrilateral_topology[2] = 2;
+
+            Quadrilateral_topology[3] = 3;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_front,*gmesh_ThreeDHexPri); // create boundary element; in front
+            elementid++;
+            
+        }
+        {
+            
             Quadrilateral_topology[0] = 1;
             
-            Quadrilateral_topology[1] = 2;
-
-            Quadrilateral_topology[2] = 3;
-
-            Quadrilateral_topology[3] = 0;
+            Quadrilateral_topology[1] = 16;
+            
+            Quadrilateral_topology[2] = 17;
+            
+            Quadrilateral_topology[3] = 2;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_front,*gmesh_ThreeDHexPri); // create boundary element; in front
             elementid++;
@@ -2081,23 +2095,9 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Quadrilateral_topology[0] = 2;
             
-            Quadrilateral_topology[1] = 16;
-            
-            Quadrilateral_topology[2] = 17;
-            
-            Quadrilateral_topology[3] = 3;
-            
-            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_front,*gmesh_ThreeDHexPri); // create boundary element; in front
-            elementid++;
-            
-        }
-        {
-            
-            Quadrilateral_topology[0] = 3;
-            
             Quadrilateral_topology[1] = 17;
             
-            Quadrilateral_topology[2] = 20;
+            Quadrilateral_topology[2] = 21;
             
             Quadrilateral_topology[3] = 12;
             
@@ -2107,9 +2107,9 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         }
         {
             
-            Quadrilateral_topology[0] = 0;
+            Quadrilateral_topology[0] = 3;
             
-            Quadrilateral_topology[1] = 3;
+            Quadrilateral_topology[1] = 2;
             
             Quadrilateral_topology[2] = 12;
             
@@ -2146,7 +2146,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Quadrilateral_topology[2] = 16;
             
-            Quadrilateral_topology[3] = 2;
+            Quadrilateral_topology[3] = 1;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_right,*gmesh_ThreeDHexPri); // create boundary element; right
             elementid++;
@@ -2158,9 +2158,9 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Quadrilateral_topology[1] = 5;
             
-            Quadrilateral_topology[2] = 2;
+            Quadrilateral_topology[2] = 1;
             
-            Quadrilateral_topology[3] = 1;
+            Quadrilateral_topology[3] = 0;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_right,*gmesh_ThreeDHexPri); // create boundary element; right
             elementid++;
@@ -2227,7 +2227,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
         }
     }
-    
+
     // left
     {
         {
@@ -2250,7 +2250,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Quadrilateral_topology[1] = 24;
             
-            Quadrilateral_topology[2] = 21;
+            Quadrilateral_topology[2] = 20;
             
             Quadrilateral_topology[3] = 22;
             
@@ -2262,9 +2262,9 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Quadrilateral_topology[0] = 22;
             
-            Quadrilateral_topology[1] = 21;
+            Quadrilateral_topology[1] = 20;
             
-            Quadrilateral_topology[2] = 20;
+            Quadrilateral_topology[2] = 21;
             
             Quadrilateral_topology[3] = 12;
             
@@ -2298,7 +2298,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Quadrilateral_topology[2] = 13;
             
-            Quadrilateral_topology[3] = 0;
+            Quadrilateral_topology[3] = 3;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_bottom,*gmesh_ThreeDHexPri); // create boundary element; bottom
             elementid++;
@@ -2306,13 +2306,13 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         }
         {
             
-            Quadrilateral_topology[0] = 1;
+            Quadrilateral_topology[0] = 0;
             
             Quadrilateral_topology[1] = 4;
             
             Quadrilateral_topology[2] = 7;
             
-            Quadrilateral_topology[3] = 0;
+            Quadrilateral_topology[3] = 3;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_bottom,*gmesh_ThreeDHexPri); // create boundary element; bottom
             elementid++;
@@ -2343,7 +2343,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Triangle_topology[1] = 19;
 
-            Triangle_topology[2] = 21;
+            Triangle_topology[2] = 20;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoTriangle > (elementid,Triangle_topology,bc_top,*gmesh_ThreeDHexPri); // create boundary element; top
             elementid++;
@@ -2354,7 +2354,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Triangle_topology[1] = 24;
             
-            Triangle_topology[2] = 21;
+            Triangle_topology[2] = 20;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoTriangle > (elementid,Triangle_topology,bc_top,*gmesh_ThreeDHexPri); // create boundary element; top
             elementid++;
@@ -2365,7 +2365,7 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Triangle_topology[1] = 23;
             
-            Triangle_topology[2] = 21;
+            Triangle_topology[2] = 20;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoTriangle > (elementid,Triangle_topology,bc_top,*gmesh_ThreeDHexPri); // create boundary element; top
             elementid++;
@@ -2374,9 +2374,9 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
             
             Triangle_topology[0] = 17;
             
-            Triangle_topology[1] = 21;
+            Triangle_topology[1] = 20;
             
-            Triangle_topology[2] = 20;
+            Triangle_topology[2] = 21;
             
             new TPZGeoElRefPattern< pzgeom::TPZGeoTriangle > (elementid,Triangle_topology,bc_top,*gmesh_ThreeDHexPri); // create boundary element; top
             elementid++;
