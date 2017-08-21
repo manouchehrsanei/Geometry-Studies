@@ -21,27 +21,34 @@
 
 
 #include "TPZVTKGeoMesh.h"
-#include "pzbndcond.h"
 
 
-// ******************* (Geometry linear description: Zero and One D element) *****************
+#include "tpzquadraticline.h"
+#include "tpzquadratictrig.h"
+#include "tpzquadraticquad.h"
+#include "tpzquadraticcube.h"
+#include "tpzquadratictetra.h"
+#include "tpzquadraticprism.h"
+
+
+// ************************************* (Geometry linear description: Zero and One D element) ******************
 
 void ZeroDElements();
 void OneDElements();
 
-// ******************* (Geometry linear description: Two D element) **************************
+// ************************************* (Geometry linear description: Two D element) ***************************
 
 void TwoDTriElements();
 void TwoDQuadElements();
 
-// ******************* (Geometry linear description: Three D element) ************************
+// ************************************* (Geometry linear description: Three D element) *************************
 
 void ThreeDTetraElements();
 void ThreeDPyraElements();
 void ThreeDPrisElements();
 void ThreeDHexaElements();
 
-// ******************* (Create linear meshes: 1D) *******************************************
+// ************************************** (Create linear meshes: 1D) ********************************************
 
 TPZGeoMesh *CreateOneDLGMesh(long num_el, REAL size_el);
 
@@ -49,7 +56,7 @@ TPZGeoMesh *CreateOneDNLGMesh(long num_el, REAL size_el);
 
 
 
-// ******************* (Create linear meshes: 2D) *******************************************
+// ************************************** (Create linear meshes: 2D) ********************************************
 
 TPZGeoMesh *CreateTwoDSimpGMesh(int num_div, REAL Lx, REAL Ly);
 
@@ -58,15 +65,44 @@ TPZGeoMesh *CreateTwoDTriGMesh(long nnodes, REAL Lx, REAL Ly);
 TPZGeoMesh *CreateTwoDQuadGMesh(long nnodesqu, REAL Lx, REAL Ly);
 
 
-// ******************* (Create linear meshes: 3D) *******************************************
+// ************************************* (Create linear meshes: 3D) ********************************************
 
 TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz);
 
+TPZGeoMesh *CreateThreeDHexPrytetGMesh(long nnodesthrhpt, REAL Lx, REAL Ly, REAL Lz);
 
-// ******************* (main of program) *******************************************
+
+// ********************************** (Geometry nonlinear description: One D element) **************************
+
+void NonOneDElements();
+
+// ************************************* (Geometry linear description: Two D element) **************************
+
+void NonTwoDTriElements();
+void NonTwoDQuadElements();
+
+// ************************************* (Geometry linear description: Three D element) *************************
+
+void NonThreeDTetraElements();
+void NonThreeDPyraElements();
+void NonThreeDPrisElements();
+void NonThreeDHexaElements();
+
+
+// ************************************* (Create nonlinear meshes: 3D) ********************************************
+
+TPZGeoMesh *CreateNonThreeDHexaGMesh(long nnodesthrehex, REAL Lx, REAL Ly, REAL Lz);
+
+
+
+
+// ******************************************** (main of program) ***********************************************
 
 
 int main() {
+
+    
+    // ********************************* (linear elements) ******************************************************
 
     ZeroDElements();
     OneDElements();
@@ -80,7 +116,7 @@ int main() {
     ThreeDHexaElements();
     
     
-    // ******************* (Create linear meshes: 1D) *******************************************
+    // ******************* (Create linear meshes: 1D) ***********************************************************
     
     REAL domain = 1.;
     long num_el = 10;
@@ -94,7 +130,7 @@ int main() {
     std::ofstream vtkgmeshOneDL("geomesh_OneDL.vtk");
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDL, vtkgmeshOneDL);
 
-    // --------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
     
     
     TPZGeoMesh *gmesh_OneDNL = CreateOneDNLGMesh(num_el, size_el); // function to create the 1D geometric mesh
@@ -105,7 +141,7 @@ int main() {
     std::ofstream vtkgmeshOneDNL("geomesh_OneDNL.vtk");
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDNL, vtkgmeshOneDNL);
     
-    // ******************* (Create linear meshes: 2D) *******************************************
+    // ********************************* (Create linear meshes: 2D) *******************************************
 
     long num_divsi = 2; // number of divition
     REAL Lx = 1.; // length of domain in x direction
@@ -120,7 +156,7 @@ int main() {
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDSimp, vtkgmeshTwoDSimp);
     
     
-    // --------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
     
     long nnodes = 9; // Number of the nodes
     
@@ -133,7 +169,7 @@ int main() {
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDTri, vtkgmeshTwoDTri);
     
     
-    // --------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
     
     long nnodesqu = 10; // number of divition
     
@@ -146,7 +182,7 @@ int main() {
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDQuad, vtkgmeshTwoDQuad);
 
     
-    // ******************* (Create linear meshes: 3D) *******************************************
+    // ****************************** (Create linear meshes: 3D) ********************************************
     
     REAL Lz = 1.;
     long nnodesthr = 25; // number of divition
@@ -159,6 +195,48 @@ int main() {
     std::ofstream vtkgmeshThreeDHexPri("geomesh_ThreeDHexPri.vtk");
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPri, vtkgmeshThreeDHexPri);
     
+    // ----------------------------------------------------------------------------------------
+    
+    long nnodesthrhpt = 12; // number of divition
+    
+    TPZGeoMesh *gmesh_ThreeDHexPrytet = CreateThreeDHexPrytetGMesh(nnodesthrhpt, Lx, Ly, Lz); // function to create the 3D geometric mesh
+    
+    std::ofstream outgmeshThreeDHexPrytet("geomesh_ThreeDHexPrytet.txt");
+    gmesh_ThreeDHexPrytet->Print(outgmeshThreeDHexPrytet);
+    
+    std::ofstream vtkgmeshThreeDHexPrytet("geomesh_ThreeDHexPrytet.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPrytet, vtkgmeshThreeDHexPrytet);
+    
+    
+    // *************************** (nonlinear elements) *****************************************************
+    
+    NonOneDElements();
+    
+    NonTwoDTriElements();
+    NonTwoDQuadElements();
+    
+    NonThreeDTetraElements();
+    NonThreeDPyraElements();
+    NonThreeDPrisElements();
+    NonThreeDHexaElements();
+    
+    
+    // ----------------------------------------------------------------------------------------
+    
+    long nnodesthrehex = 20; // number of divition
+    
+    TPZGeoMesh *gmesh_NonThreeDHexa = CreateNonThreeDHexaGMesh(nnodesthrehex, Lx, Ly, Lz); // function to create the 3D geometric mesh
+    
+    std::ofstream outgmeshNonThreeDHexa("geomesh_NonThreeDHexa.txt");
+    gmesh_NonThreeDHexa->Print(outgmeshNonThreeDHexa);
+    
+    std::ofstream vtkgmeshNonThreeDHexa("geomesh_NonThreeDHexa.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_NonThreeDHexa, vtkgmeshNonThreeDHexa);
+    
+    
+    
+
+    
     
     return 0;
 }
@@ -166,7 +244,12 @@ int main() {
 
 
 
-// ********************************************** functions *********************************************
+// ++++++++++++++++++++++++++++++++++++++++++++ functions +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+// ********************************* (linear elements) ******************************************************
+
 
 
 void ZeroDElements(){
@@ -232,6 +315,7 @@ void ZeroDElements(){
     geometry_1DP.Print(file);
     
 }
+// ------------------------------------------------------------------------------------------
 
 void OneDElements(){
     
@@ -283,6 +367,7 @@ void OneDElements(){
     
 }
 
+// ------------------------------------------------------------------------------------------
 
 void TwoDTriElements() {
     
@@ -346,6 +431,7 @@ void TwoDTriElements() {
     
 }
 
+// ------------------------------------------------------------------------------------------
 
 
 void TwoDQuadElements() {
@@ -419,6 +505,7 @@ void TwoDQuadElements() {
     
 }
 
+// ------------------------------------------------------------------------------------------
 
 
 void ThreeDTetraElements() {
@@ -491,6 +578,8 @@ void ThreeDTetraElements() {
     geometry_3DTetra.Print(file);
     
 }
+
+// ------------------------------------------------------------------------------------------
 
 
 void ThreeDPyraElements() {
@@ -573,6 +662,9 @@ void ThreeDPyraElements() {
     geometry_3DPyra.Print(file);
     
 }
+
+// ------------------------------------------------------------------------------------------
+
 
 void ThreeDPrisElements() {
     
@@ -664,6 +756,8 @@ void ThreeDPrisElements() {
     geometry_3DPris.Print(file);
     
 }
+
+// ------------------------------------------------------------------------------------------
 
 
 void ThreeDHexaElements() {
@@ -2393,4 +2487,1782 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
         return gmesh_ThreeDHexPri;
 
     }
+
+// ----------------------------------------------------------------------------------------------------
+
+
+// ************************************** Create 3D hexahedral and prism meshes ***************************************
+
+
+TPZGeoMesh *CreateThreeDHexPrytetGMesh(long nnodesthrhpt, REAL Lx, REAL Ly, REAL Lz)
+{
+    TPZGeoMesh * gmesh_ThreeDHexPrytet = new TPZGeoMesh; // Initilized of TPZGeoMesh class
+    
+    long geometry_dim = 3; // geometry dimension
+    
+    std::string name("geomesh ThreeDHexPrytet"); // geometry name
+    gmesh_ThreeDHexPrytet->SetName(name);
+    gmesh_ThreeDHexPrytet->SetDimension(geometry_dim);
+    
+    
+    gmesh_ThreeDHexPrytet->NodeVec().Resize(nnodesthrhpt); // Resize of the geometry mesh
+    TPZVec<TPZGeoNode> Node(nnodesthrhpt);
+    
+    TPZVec<long> Hexahedron_topology(8);
+    TPZVec <long> Quadrilateral_topology(4);
+    
+    TPZVec<REAL> coord(3,0.0);
+    
+    // Index of element
+    
+    long elementid = 0;
+    int physical_id = 1;
+    
+    // Index of boundary element
+    const int bc_front = -1; // define id for a material (border in front)
+    const int bc_right = -2; // define id for a material (border right)
+    const int bc_back = -3; // define id for a material (border back)
+    const int bc_left = -4; // define id for a material (border left)
+    const int bc_bottom = -5; // define id for a material (border bottom)
+    const int bc_top = -6; // define id for a material (border top)
+    
+    // 0th element
+    
+    {
+        
+        // 0th node
+        coord[0] = Lx; // x coordinate
+        coord[1] = Ly; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[0].SetNodeId(0);
+        gmesh_ThreeDHexPrytet->NodeVec()[0].SetCoord(coord);
+        Hexahedron_topology[0] = 0;
+        
+        // 1st node
+        coord[0] = Lx; // x coordinate
+        coord[1] = Ly; // Y coordinate
+        coord[2] = Lz/2; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[1].SetNodeId(1);
+        gmesh_ThreeDHexPrytet->NodeVec()[1].SetCoord(coord);
+        Hexahedron_topology[1] = 1;
+        
+        // 2nd node
+        coord[0] = Lx; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = Lz/2; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[2].SetNodeId(2);
+        gmesh_ThreeDHexPrytet->NodeVec()[2].SetCoord(coord);
+        Hexahedron_topology[2] = 2;
+        
+        // 3rd node
+        coord[0] = Lx; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[3].SetNodeId(3);
+        gmesh_ThreeDHexPrytet->NodeVec()[3].SetCoord(coord);
+        Hexahedron_topology[3] = 3;
+        
+        // 4th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = Ly; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[4].SetNodeId(4);
+        gmesh_ThreeDHexPrytet->NodeVec()[4].SetCoord(coord);
+        Hexahedron_topology[4] = 4;
+        
+        // 5th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = Ly; // Y coordinate
+        coord[2] = Lz/2; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[5].SetNodeId(5);
+        gmesh_ThreeDHexPrytet->NodeVec()[5].SetCoord(coord);
+        Hexahedron_topology[5] = 5;
+        
+        // 6th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = Lz/2; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[6].SetNodeId(6);
+        gmesh_ThreeDHexPrytet->NodeVec()[6].SetCoord(coord);
+        Hexahedron_topology[6] = 6;
+        
+        // 7th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[7].SetNodeId(7);
+        gmesh_ThreeDHexPrytet->NodeVec()[7].SetCoord(coord);
+        Hexahedron_topology[7] = 7;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZGeoCube> (elementid, Hexahedron_topology, physical_id, *gmesh_ThreeDHexPrytet);
+        elementid++;
+        
+    }
+    
+    // 1st element
+    
+    {
+        
+        // 1st node
+        Hexahedron_topology[0] = 1;
+        
+        // 2nd node
+        coord[0] = Lx; // x coordinate
+        coord[1] = Ly; // Y coordinate
+        coord[2] = Lz; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[8].SetNodeId(8);
+        gmesh_ThreeDHexPrytet->NodeVec()[8].SetCoord(coord);
+        Hexahedron_topology[1] = 8;
+        
+        // 3rd node
+        coord[0] = Lx; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = Lz; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[9].SetNodeId(9);
+        gmesh_ThreeDHexPrytet->NodeVec()[9].SetCoord(coord);
+        Hexahedron_topology[2] = 9;
+        
+        // 4th node
+        Hexahedron_topology[3] = 2;
+        
+        // 5th node
+        Hexahedron_topology[4] = 5;
+        
+        // 6th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = Ly; // Y coordinate
+        coord[2] = Lz; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[10].SetNodeId(10);
+        gmesh_ThreeDHexPrytet->NodeVec()[10].SetCoord(coord);
+        Hexahedron_topology[5] = 10;
+        
+        // 7th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = Lz; // Z coordinate
+        gmesh_ThreeDHexPrytet->NodeVec()[11].SetNodeId(11);
+        gmesh_ThreeDHexPrytet->NodeVec()[11].SetCoord(coord);
+        Hexahedron_topology[6] = 11;
+        
+        // 8th node
+        Hexahedron_topology[7] = 6;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZGeoCube> (elementid, Hexahedron_topology, physical_id, *gmesh_ThreeDHexPrytet);
+        elementid++;
+        
+    }
+    
+    // ********************* boundary ****************
+    
+    // in front
+    {
+        {
+            
+            Quadrilateral_topology[0] = 0;
+            
+            Quadrilateral_topology[1] = 1;
+            
+            Quadrilateral_topology[2] = 2;
+            
+            Quadrilateral_topology[3] = 3;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_front,*gmesh_ThreeDHexPrytet); // create boundary element; in front
+            elementid++;
+            
+        }
+        {
+            
+            Quadrilateral_topology[0] = 1;
+            
+            Quadrilateral_topology[1] = 8;
+            
+            Quadrilateral_topology[2] = 9;
+            
+            Quadrilateral_topology[3] = 2;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_front,*gmesh_ThreeDHexPrytet); // create boundary element; in front
+            elementid++;
+            
+        }
+        
+    }
+    
+
+    // right
+    {
+        {
+            
+            Quadrilateral_topology[0] = 4;
+            
+            Quadrilateral_topology[1] = 5;
+            
+            Quadrilateral_topology[2] = 1;
+            
+            Quadrilateral_topology[3] = 0;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_right,*gmesh_ThreeDHexPrytet); // create boundary element; right
+            elementid++;
+            
+        }
+        {
+            
+            Quadrilateral_topology[0] = 5;
+            
+            Quadrilateral_topology[1] = 10;
+            
+            Quadrilateral_topology[2] = 8;
+            
+            Quadrilateral_topology[3] = 1;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_right,*gmesh_ThreeDHexPrytet); // create boundary element; right
+            elementid++;
+            
+        }
+        
+    }
+    
+    // back
+    {
+        {
+            
+            Quadrilateral_topology[0] = 4;
+            
+            Quadrilateral_topology[1] = 5;
+            
+            Quadrilateral_topology[2] = 6;
+            
+            Quadrilateral_topology[3] = 7;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_back,*gmesh_ThreeDHexPrytet); // create boundary element; back
+            elementid++;
+            
+        }
+        {
+            
+            Quadrilateral_topology[0] = 5;
+            
+            Quadrilateral_topology[1] = 10;
+            
+            Quadrilateral_topology[2] = 11;
+            
+            Quadrilateral_topology[3] = 6;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_back,*gmesh_ThreeDHexPrytet); // create boundary element; back
+            elementid++;
+            
+        }
+        
+    }
+    
+    // left
+    {
+        {
+            
+            Quadrilateral_topology[0] = 7;
+            
+            Quadrilateral_topology[1] = 6;
+            
+            Quadrilateral_topology[2] = 2;
+            
+            Quadrilateral_topology[3] = 3;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_left,*gmesh_ThreeDHexPrytet); // create boundary element; left
+            elementid++;
+            
+        }
+        {
+            
+            Quadrilateral_topology[0] = 6;
+            
+            Quadrilateral_topology[1] = 11;
+            
+            Quadrilateral_topology[2] = 9;
+            
+            Quadrilateral_topology[3] = 2;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_left,*gmesh_ThreeDHexPrytet); // create boundary element; left
+            elementid++;
+            
+        }
+        
+    }
+    
+    
+    
+    // bottom
+
+    {
+            
+            Quadrilateral_topology[0] = 0;
+            
+            Quadrilateral_topology[1] = 4;
+            
+            Quadrilateral_topology[2] = 7;
+            
+            Quadrilateral_topology[3] = 3;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_bottom,*gmesh_ThreeDHexPrytet); // create boundary element; bottom
+            elementid++;
+            
+   }
+    
+    
+    // top
+   {
+            
+            Quadrilateral_topology[0] = 8;
+            
+            Quadrilateral_topology[1] = 10;
+            
+            Quadrilateral_topology[2] = 11;
+            
+            Quadrilateral_topology[3] = 9;
+            
+            new TPZGeoElRefPattern< pzgeom::TPZGeoQuad > (elementid,Quadrilateral_topology,bc_top,*gmesh_ThreeDHexPrytet); // create boundary element; top
+            elementid++;
+            
+   }
+
+    
+    // Build the mesh
+    gmesh_ThreeDHexPrytet->BuildConnectivity();
+    
+    
+    return gmesh_ThreeDHexPrytet;
+    
+}
+
+
+
+// *************************** (nonlinear elements) ****************************************************
+
+
+void NonOneDElements(){
+    
+    TPZGeoMesh geometry_1DNonL; // Create the objet that will describe the nonlinear geometry (Line).
+    int n_nodes = 3; // number of nodes
+    int geometry_dim = 1; // geometry dimension
+    std::string name("geometry 1DNonL"); // geometry name
+    
+    // setting the object
+    geometry_1DNonL.SetName(name);
+    geometry_1DNonL.SetDimension(geometry_dim);
+    geometry_1DNonL.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonLinear_topology(3);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        // 1st node of line element is located at x ={-10,PI,0.5}
+        
+        coord[0] = -10.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_1DNonL.NodeVec()[0].SetNodeId(node_id);
+        geometry_1DNonL.NodeVec()[0].SetCoord(coord);
+        NonLinear_topology[0] = node_id;
+        
+        // 2nd node of line element is located at x ={10,PI,0.5}
+        node_id++;
+        
+        coord[0] = 10.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_1DNonL.NodeVec()[1].SetNodeId(node_id);
+        geometry_1DNonL.NodeVec()[1].SetCoord(coord);
+        NonLinear_topology[1] = node_id;
+        
+        // 3rd node of line element is located at x ={0.0,PI,0.5}
+        node_id++;
+
+        coord[0] = 0.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_1DNonL.NodeVec()[2].SetNodeId(node_id);
+        geometry_1DNonL.NodeVec()[2].SetCoord(coord);
+        NonLinear_topology[2] = node_id;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticLine> (element_id, NonLinear_topology, physical_id, geometry_1DNonL);
+    }
+    
+    geometry_1DNonL.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_1DNonL.txt");
+    geometry_1DNonL.Print(file);
+    
+}
+
+
+// ------------------------------------------------------------------------------------------
+
+void NonTwoDTriElements() {
+    
+    TPZGeoMesh geometry_Non2DTri; // Create the objet that will describe the nonlinear geometry (2D Triangle).
+    int n_nodes = 6; // number of nodes
+    int geometry_dim = 2; // geometry dimension
+    std::string name("geometry Non2DTri"); // geometry name
+    
+    // setting the object
+    geometry_Non2DTri.SetName(name);
+    geometry_Non2DTri.SetDimension(geometry_dim);
+    geometry_Non2DTri.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonTriangle_topology(6);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        
+        // 1st node of triangle element is located at x ={PI,0.0,0.0}
+        
+        coord[0] = M_PI; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non2DTri.NodeVec()[0].SetNodeId(node_id);
+        geometry_Non2DTri.NodeVec()[0].SetCoord(coord);
+        NonTriangle_topology[0] = node_id;
+        
+        // 2nd node of triangle element is located at x ={0.0,PI,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non2DTri.NodeVec()[1].SetNodeId(node_id);
+        geometry_Non2DTri.NodeVec()[1].SetCoord(coord);
+        NonTriangle_topology[1] = node_id;
+        
+        // 3rd node of triangle element is located at x ={0.0,0.0,PI}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non2DTri.NodeVec()[2].SetNodeId(node_id);
+        geometry_Non2DTri.NodeVec()[2].SetCoord(coord);
+        NonTriangle_topology[2] = node_id;
+        
+        
+        // 4th node of triangle element is located at x ={PI/2,PI/2,0.0}
+        node_id++;
+
+        coord[0] = M_PI/2; // x coordinate
+        coord[1] = M_PI/2; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non2DTri.NodeVec()[3].SetNodeId(node_id);
+        geometry_Non2DTri.NodeVec()[3].SetCoord(coord);
+        NonTriangle_topology[3] = node_id;
+        
+        
+        // 5th node of triangle element is located at x ={0.0,PI/2,PI/2}
+        node_id++;
+        
+        coord[0] = M_PI/2; // x coordinate
+        coord[1] = M_PI/2; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non2DTri.NodeVec()[4].SetNodeId(node_id);
+        geometry_Non2DTri.NodeVec()[4].SetCoord(coord);
+        NonTriangle_topology[4] = node_id;
+        
+        // 6th node of triangle element is located at x ={PI/2,0.0,PI/2}
+        node_id++;
+        
+        coord[0] = M_PI/2; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = M_PI/2; // Z coordinate
+        geometry_Non2DTri.NodeVec()[5].SetNodeId(node_id);
+        geometry_Non2DTri.NodeVec()[5].SetCoord(coord);
+        NonTriangle_topology[5] = node_id;
+        
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticTrig> (element_id, NonTriangle_topology, physical_id, geometry_Non2DTri);
+    }
+    
+    geometry_Non2DTri.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_Non2DTri.txt");
+    geometry_Non2DTri.Print(file);
+    
+}
+
+// ------------------------------------------------------------------------------------------
+
+
+void NonTwoDQuadElements() {
+    
+    TPZGeoMesh geometry_Non2DQuad; // Create the objet that will describe the nonlinear geometry (2D Quadrilateral).
+    int n_nodes = 8; // number of nodes
+    int geometry_dim = 2; // geometry dimension
+    std::string name("geometry Non2DQuad"); // geometry name
+    
+    // setting the object
+    geometry_Non2DQuad.SetName(name);
+    geometry_Non2DQuad.SetDimension(geometry_dim);
+    geometry_Non2DQuad.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonQuadrilateral_topology(8);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        
+        // 1st node of quadrilateral element is located at x ={-1.0,PI,-1.0}
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[0].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[0].SetCoord(coord);
+        NonQuadrilateral_topology[0] = node_id;
+        
+        // 2nd node of quadrilateral element is located at x ={1.0,PI,-1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[1].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[1].SetCoord(coord);
+        NonQuadrilateral_topology[1] = node_id;
+        
+        // 3rd node of quadrilateral element is located at x ={1.0,PI,1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[2].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[2].SetCoord(coord);
+        NonQuadrilateral_topology[2] = node_id;
+        
+        // 4th node of quadrilateral element is located at x ={-1.0,PI,1.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[3].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[3].SetCoord(coord);
+        NonQuadrilateral_topology[3] = node_id;
+        
+        // 5th node of quadrilateral element is located at x ={0.0,PI,-1.0}
+        node_id++;
+
+        coord[0] = 0.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[4].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[4].SetCoord(coord);
+        NonQuadrilateral_topology[4] = node_id;
+        
+        // 6th node of quadrilateral element is located at x ={1.0,PI,0.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[5].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[5].SetCoord(coord);
+        NonQuadrilateral_topology[5] = node_id;
+        
+        // 7th node of quadrilateral element is located at x ={0.0,PI,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[6].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[6].SetCoord(coord);
+        NonQuadrilateral_topology[6] = node_id;
+        
+        // 8th node of quadrilateral element is located at x ={-1.0,PI,0.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = M_PI; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non2DQuad.NodeVec()[7].SetNodeId(node_id);
+        geometry_Non2DQuad.NodeVec()[7].SetCoord(coord);
+        NonQuadrilateral_topology[7] = node_id;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (element_id, NonQuadrilateral_topology, physical_id, geometry_Non2DQuad);
+    }
+    
+    geometry_Non2DQuad.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_Non2DQuad.txt");
+    geometry_Non2DQuad.Print(file);
+    
+}
+
+// ------------------------------------------------------------------------------------------
+
+
+void NonThreeDTetraElements() {
+    
+    TPZGeoMesh geometry_Non3DTetra; // Create the objet that will describe the nonlinear geometry (3D Tetrahedron).
+    int n_nodes = 10; // number of nodes
+    int geometry_dim = 3; // geometry dimension
+    std::string name("geometry Non3DTetra"); // geometry name
+    
+    // setting the object
+    geometry_Non3DTetra.SetName(name);
+    geometry_Non3DTetra.SetDimension(geometry_dim);
+    geometry_Non3DTetra.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonTetrahedron_topology(10);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        
+        // 1st node of tetrahedron element is located at x ={0.0,0.0,0.0}
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[0].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[0].SetCoord(coord);
+        NonTetrahedron_topology[0] = node_id;
+        
+        // 2nd node of tetrahedron element is located at x ={1/2,0.0,0.0}
+        node_id++;
+
+        coord[0] = 0.5; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[1].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[1].SetCoord(coord);
+        NonTetrahedron_topology[1] = node_id;
+        
+        // 3rd node of tetrahedron element is located at x ={1.0,0.0,0.0}
+        node_id++;
+
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[2].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[2].SetCoord(coord);
+        NonTetrahedron_topology[2] = node_id;
+        
+        // 4th node of tetrahedron element is located at x ={0.0,1/2,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.5; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[3].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[3].SetCoord(coord);
+        NonTetrahedron_topology[3] = node_id;
+        
+        // 5th node of tetrahedron element is located at x ={1/2,1/2,0.0}
+        node_id++;
+        
+        coord[0] = 0.5; // x coordinate
+        coord[1] = 0.5; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[4].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[4].SetCoord(coord);
+        NonTetrahedron_topology[4] = node_id;
+        
+        // 6th node of tetrahedron element is located at x ={0.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[5].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[5].SetCoord(coord);
+        NonTetrahedron_topology[5] = node_id;
+        
+        // 7th node of tetrahedron element is located at x ={0.0,0.0,1/2}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[6].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[6].SetCoord(coord);
+        NonTetrahedron_topology[6] = node_id;
+        
+        // 8th node of tetrahedron element is located at x ={1/2,0.0,1/2}
+        node_id++;
+        
+        coord[0] = 0.5; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[7].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[7].SetCoord(coord);
+        NonTetrahedron_topology[7] = node_id;
+        
+        // 9th node of tetrahedron element is located at x ={0.0,1/2,1/2}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.5; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[8].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[8].SetCoord(coord);
+        NonTetrahedron_topology[8] = node_id;
+        
+        
+        // 10th node of tetrahedron element is located at x ={0.0,0.0,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DTetra.NodeVec()[9].SetNodeId(node_id);
+        geometry_Non3DTetra.NodeVec()[9].SetCoord(coord);
+        NonTetrahedron_topology[9] = node_id;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticTetra> (element_id, NonTetrahedron_topology, physical_id, geometry_Non3DTetra);
+    }
+    
+    geometry_Non3DTetra.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_Non3DTetra.txt");
+    geometry_Non3DTetra.Print(file);
+    
+    std::ofstream filevtk("geometry_Non3DTetra.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(&geometry_Non3DTetra, filevtk);
+    
+    
+}
+
+
+// ------------------------------------------------------------------------------------------
+// This one needs to fix
+
+void NonThreeDPyraElements() {
+    
+    TPZGeoMesh geometry_Non3DPyra; // Create the objet that will describe the nonlinear geometry (3D Pyramid).
+    int n_nodes = 13; // number of nodes
+    int geometry_dim = 3; // geometry dimension
+    std::string name("geometry Non3DPyra"); // geometry name
+    
+    // setting the object
+    geometry_Non3DPyra.SetName(name);
+    geometry_Non3DPyra.SetDimension(geometry_dim);
+    geometry_Non3DPyra.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonPyramid_topology(13);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        
+        // 0th node of pyramid element is located at x ={1.0,-1.0,0.0}
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[0].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[0].SetCoord(coord);
+        NonPyramid_topology[0] = node_id;
+        
+        // 1st node of pyramid element is located at x ={1.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[1].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[1].SetCoord(coord);
+        NonPyramid_topology[1] = node_id;
+        
+        // 2nd node of pyramid element is located at x ={-1.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[2].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[2].SetCoord(coord);
+        NonPyramid_topology[2] = node_id;
+        
+        // 3th node of pyramid element is located at x ={-1.0,-1.0,0.0}
+        node_id++;
+
+        coord[0] = -1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[3].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[3].SetCoord(coord);
+        NonPyramid_topology[3] = node_id;
+        
+        // 4th node of pyramid element is located at x ={0.0,0.0,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[4].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[4].SetCoord(coord);
+        NonPyramid_topology[4] = node_id;
+        
+        // 5th node of pyramid element is located at x ={1.0,0.0,0.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[5].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[5].SetCoord(coord);
+        NonPyramid_topology[5] = node_id;
+        
+        // 6th node of pyramid element is located at x ={0.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[6].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[6].SetCoord(coord);
+        NonPyramid_topology[6] = node_id;
+        
+        // 7th node of pyramid element is located at x ={-1.0,0.0,0.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[7].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[7].SetCoord(coord);
+        NonPyramid_topology[7] = node_id;
+        
+        
+        // 8th node of pyramid element is located at x ={0.0,-1.0,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[8].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[8].SetCoord(coord);
+        NonPyramid_topology[8] = node_id;
+        
+        // 9th node of pyramid element is located at x ={0.5,-0.5,0.5}
+        node_id++;
+        
+        coord[0] = 0.5; // x coordinate
+        coord[1] = -0.5; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[9].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[9].SetCoord(coord);
+        NonPyramid_topology[9] = node_id;
+        
+        // 10th node of pyramid element is located at x ={0.5,0.5,0.5}
+        node_id++;
+        
+        coord[0] = 0.5; // x coordinate
+        coord[1] = 0.5; // Y coordinate
+        coord[2] = -0.5; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[10].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[10].SetCoord(coord);
+        NonPyramid_topology[10] = node_id;
+        
+        // 11th node of pyramid element is located at x ={-0.5,0.5,0.5}
+        node_id++;
+        
+        coord[0] = -0.5; // x coordinate
+        coord[1] = 0.5; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[11].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[11].SetCoord(coord);
+        NonPyramid_topology[11] = node_id;
+        
+        
+        // 12th node of pyramid element is located at x ={-0.5,-0.5,0.5}
+        node_id++;
+        
+        coord[0] = -0.5; // x coordinate
+        coord[1] = -0.5; // Y coordinate
+        coord[2] = 0.5; // Z coordinate
+        geometry_Non3DPyra.NodeVec()[12].SetNodeId(node_id);
+        geometry_Non3DPyra.NodeVec()[12].SetCoord(coord);
+        NonPyramid_topology[12] = node_id;
+        
+        
+        
+        new TPZGeoElRefPattern< pzgeom::TPZGeoPyramid> (element_id, NonPyramid_topology, physical_id, geometry_Non3DPyra);
+    }
+    
+    geometry_Non3DPyra.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_Non3DPyra.txt");
+    geometry_Non3DPyra.Print(file);
+    
+}
+
+// ------------------------------------------------------------------------------------------
+
+
+void NonThreeDPrisElements() {
+    
+    TPZGeoMesh geometry_Non3DPris; // Create the objet that will describe the nonlinear geometry (3D Prism).
+    int n_nodes = 15; // number of nodes
+    int geometry_dim = 3; // geometry dimension
+    std::string name("geometry Non3DPris"); // geometry name
+    
+    // setting the object
+    geometry_Non3DPris.SetName(name);
+    geometry_Non3DPris.SetDimension(geometry_dim);
+    geometry_Non3DPris.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonPrism_topology(15);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        
+        // 0th node of prism element is located at x ={0.0,1.0,1.0}
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPris.NodeVec()[0].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[0].SetCoord(coord);
+        NonPrism_topology[0] = node_id;
+        
+        // 1st node of prism element is located at x ={0.0,0.0,1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPris.NodeVec()[1].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[1].SetCoord(coord);
+        NonPrism_topology[1] = node_id;
+        
+        // 2nd node of prism element is located at x ={1.0,0.0,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DPris.NodeVec()[2].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[2].SetCoord(coord);
+        NonPrism_topology[2] = node_id;
+        
+        // 3rd node of prism element is located at x ={0.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[3].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[3].SetCoord(coord);
+        NonPrism_topology[3] = node_id;
+        
+        // 4th node of prism element is located at x ={0.0,0.0,0.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[4].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[4].SetCoord(coord);
+        NonPrism_topology[4] = node_id;
+        
+        // 5th node of prism element is located at x ={1.0,0.0,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[5].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[5].SetCoord(coord);
+        NonPrism_topology[5] = node_id;
+        
+        // 6th node of prism element is located at x ={0.0,0.5,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[6].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[6].SetCoord(coord);
+        NonPrism_topology[6] = node_id;
+        
+        // 7th node of prism element is located at x ={0.5,0.0,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[7].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[7].SetCoord(coord);
+        NonPrism_topology[7] = node_id;
+        
+        // 8th node of prism element is located at x ={0.5,0.5,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[8].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[8].SetCoord(coord);
+        NonPrism_topology[8] = node_id;
+        
+        // 9th node of prism element is located at x ={0.0,0.5,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[9].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[9].SetCoord(coord);
+        NonPrism_topology[9] = node_id;
+        
+        
+        // 10th node of prism element is located at x ={0.5,0.0,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[10].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[10].SetCoord(coord);
+        NonPrism_topology[10] = node_id;
+        
+        
+        // 11th node of prism element is located at x ={0.5,0.5,0.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[11].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[11].SetCoord(coord);
+        NonPrism_topology[11] = node_id;
+        
+        // 12th node of prism element is located at x ={0.0,1.0,0.5}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[12].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[12].SetCoord(coord);
+        NonPrism_topology[12] = node_id;
+        
+        // 13th node of prism element is located at x ={0.0,0.0,0.5}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[13].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[13].SetCoord(coord);
+        NonPrism_topology[13] = node_id;
+        
+        // 14th node of prism element is located at x ={1.0,0.0,0.5}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = M_PI; // Z coordinate
+        geometry_Non3DPris.NodeVec()[14].SetNodeId(node_id);
+        geometry_Non3DPris.NodeVec()[14].SetCoord(coord);
+        NonPrism_topology[14] = node_id;
+        
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticPrism> (element_id, NonPrism_topology, physical_id, geometry_Non3DPris);
+    }
+    
+    geometry_Non3DPris.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_Non3DPris.txt");
+    geometry_Non3DPris.Print(file);
+    
+}
+
+
+// ------------------------------------------------------------------------------------------
+
+
+void NonThreeDHexaElements() {
+    
+    TPZGeoMesh geometry_Non3DHexa; // Create the objet that will describe the nonlinear geometry (3D Hexahedron).
+    int n_nodes = 20; // number of nodes
+    int geometry_dim = 3; // geometry dimension
+    std::string name("geometry Non3DHexa"); // geometry name
+    
+    // setting the object
+    geometry_Non3DHexa.SetName(name);
+    geometry_Non3DHexa.SetDimension(geometry_dim);
+    geometry_Non3DHexa.NodeVec().Resize(n_nodes);
+    
+    
+    int node_id = 0;
+    int element_id = 0;
+    int physical_id = 1;
+    TPZVec<long> NonHexahedron_topology(20);
+    TPZVec<REAL> coord(3,0.0);
+    
+    {
+        
+        // 1st node of hexahedron element is located at x ={-1.0,-1.0,-1.0}
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[0].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[0].SetCoord(coord);
+        NonHexahedron_topology[0] = node_id;
+        
+        // 2nd node of hexahedron element is located at x ={1.0,-1.0,-1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[1].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[1].SetCoord(coord);
+        NonHexahedron_topology[1] = node_id;
+        
+        // 3rd node of hexahedron element is located at x ={1.0,1.0,-1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[2].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[2].SetCoord(coord);
+        NonHexahedron_topology[2] = node_id;
+        
+        // 4th node of hexahedron element is located at x ={-1.0,1.0,-1.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[3].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[3].SetCoord(coord);
+        NonHexahedron_topology[3] = node_id;
+        
+        // 5th node of hexahedron element is located at x ={-1.0,-1.0,1.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[4].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[4].SetCoord(coord);
+        NonHexahedron_topology[4] = node_id;
+        
+        // 6th node of hexahedron element is located at x ={1.0,-1.0,1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[5].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[5].SetCoord(coord);
+        NonHexahedron_topology[5] = node_id;
+        
+        // 7th node of hexahedron element is located at x ={1.0,1.0,1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[6].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[6].SetCoord(coord);
+        NonHexahedron_topology[6] = node_id;
+        
+        // 8th node of hexahedron element is located at x ={-1.0,1.0,1.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[7].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[7].SetCoord(coord);
+        NonHexahedron_topology[7] = node_id;
+        
+        // 9th node of hexahedron element is located at x ={0.0,-1.0,-1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[8].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[8].SetCoord(coord);
+        NonHexahedron_topology[8] = node_id;
+        
+        
+        // 10th node of hexahedron element is located at x ={1.0,0.0,-1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[9].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[9].SetCoord(coord);
+        NonHexahedron_topology[9] = node_id;
+        
+        
+        // 11th node of hexahedron element is located at x ={0.0,1.0,-1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[10].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[10].SetCoord(coord);
+        NonHexahedron_topology[10] = node_id;
+        
+        
+        // 12th node of hexahedron element is located at x ={-1.0,0.0,-1.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[11].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[11].SetCoord(coord);
+        NonHexahedron_topology[11] = node_id;
+        
+        
+        // 13th node of hexahedron element is located at x ={0.0,1.0,-1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[12].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[12].SetCoord(coord);
+        NonHexahedron_topology[12] = node_id;
+        
+        
+        // 14th node of hexahedron element is located at x ={1.0,0.0,1.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[13].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[13].SetCoord(coord);
+        NonHexahedron_topology[13] = node_id;
+        
+        
+        // 15th node of hexahedron element is located at x ={0.0,1.0,1.0}
+        node_id++;
+        
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[14].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[14].SetCoord(coord);
+        NonHexahedron_topology[14] = node_id;
+        
+        
+        // 16th node of hexahedron element is located at x ={-1.0,0.0,1.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[15].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[15].SetCoord(coord);
+        NonHexahedron_topology[15] = node_id;
+        
+        
+        // 17th node of hexahedron element is located at x ={-1.0,-1.0,0.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[16].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[16].SetCoord(coord);
+        NonHexahedron_topology[16] = node_id;
+        
+        
+        // 18th node of hexahedron element is located at x ={1.0,-1.0,0.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[17].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[17].SetCoord(coord);
+        NonHexahedron_topology[17] = node_id;
+        
+        // 19th node of hexahedron element is located at x ={1.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[18].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[18].SetCoord(coord);
+        NonHexahedron_topology[18] = node_id;
+        
+        
+        // 20th node of hexahedron element is located at x ={-1.0,1.0,0.0}
+        node_id++;
+        
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        geometry_Non3DHexa.NodeVec()[19].SetNodeId(node_id);
+        geometry_Non3DHexa.NodeVec()[19].SetCoord(coord);
+        NonHexahedron_topology[19] = node_id;
+        
+        
+
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticCube> (element_id, NonHexahedron_topology, physical_id, geometry_Non3DHexa);
+    }
+    
+    geometry_Non3DHexa.BuildConnectivity();
+    
+    
+    std::ofstream file("geometry_Non3DHexa.txt");
+    geometry_Non3DHexa.Print(file);
+    
+}
+
+
+
+// ************************************** Create 3D nonlinear hexahedral  ***************************************
+
+
+TPZGeoMesh *CreateNonThreeDHexaGMesh(long nnodesthrehex, REAL Lx, REAL Ly, REAL Lz)
+{
+    TPZGeoMesh * gmesh_NonThreeDHexa = new TPZGeoMesh; // Initilized of TPZGeoMesh class
+    
+    long geometry_dim = 3; // geometry dimension
+    
+    std::string name("geomesh NonThreeDHexa"); // geometry name
+    gmesh_NonThreeDHexa->SetName(name);
+    gmesh_NonThreeDHexa->SetDimension(geometry_dim);
+    
+    
+    gmesh_NonThreeDHexa->NodeVec().Resize(nnodesthrehex); // Resize of the geometry mesh
+    TPZVec<TPZGeoNode> Node(nnodesthrehex);
+    
+    TPZVec<long> NonHexahedron_topology(20);
+    TPZVec<long> NonQuadrilateral_topology(8);
+
+    
+    TPZVec<REAL> coord(3,0.0);
+    
+    // Index of element
+    
+    long elementid = 0;
+    int physical_id = 1;
+    
+    // Index of boundary element
+    const int bc_front = -1; // define id for a material (border in front)
+    const int bc_right = -2; // define id for a material (border right)
+    const int bc_back = -3; // define id for a material (border back)
+    const int bc_left = -4; // define id for a material (border left)
+    const int bc_bottom = -5; // define id for a material (border bottom)
+    const int bc_top = -6; // define id for a material (border top)
+    
+    
+    // 0th element
+    
+    {
+        
+        // 0th node
+        coord[0] = -1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[0].SetNodeId(0);
+        gmesh_NonThreeDHexa->NodeVec()[0].SetCoord(coord);
+        NonHexahedron_topology[0] = 0;
+        
+        // 1st node
+        coord[0] = 1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[1].SetNodeId(1);
+        gmesh_NonThreeDHexa->NodeVec()[1].SetCoord(coord);
+        NonHexahedron_topology[1] = 1;
+        
+        // 2nd node
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[2].SetNodeId(2);
+        gmesh_NonThreeDHexa->NodeVec()[2].SetCoord(coord);
+        NonHexahedron_topology[2] = 2;
+        
+        // 3rd node
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = -1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[3].SetNodeId(3);
+        gmesh_NonThreeDHexa->NodeVec()[3].SetCoord(coord);
+        NonHexahedron_topology[3] = 3;
+        
+        // 4th node
+        coord[0] = -1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[4].SetNodeId(4);
+        gmesh_NonThreeDHexa->NodeVec()[4].SetCoord(coord);
+        NonHexahedron_topology[4] = 4;
+        
+        // 5th node
+        coord[0] = 1.0; // x coordinate
+        coord[1] = -1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[5].SetNodeId(5);
+        gmesh_NonThreeDHexa->NodeVec()[5].SetCoord(coord);
+        NonHexahedron_topology[5] = 5;
+        
+        // 6th node
+        coord[0] = 1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[6].SetNodeId(6);
+        gmesh_NonThreeDHexa->NodeVec()[6].SetCoord(coord);
+        NonHexahedron_topology[6] = 6;
+        
+        // 7th node
+        coord[0] = -1.0; // x coordinate
+        coord[1] = 1.0; // Y coordinate
+        coord[2] = 1.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[7].SetNodeId(7);
+        gmesh_NonThreeDHexa->NodeVec()[7].SetCoord(coord);
+        NonHexahedron_topology[7] = 7;
+        
+        // 8th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = -1.5; // Y coordinate
+        coord[2] = -1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[8].SetNodeId(8);
+        gmesh_NonThreeDHexa->NodeVec()[8].SetCoord(coord);
+        NonHexahedron_topology[8] = 8;
+        
+        
+        // 9th node
+        coord[0] = 1.5; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = -1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[9].SetNodeId(9);
+        gmesh_NonThreeDHexa->NodeVec()[9].SetCoord(coord);
+        NonHexahedron_topology[9] = 9;
+        
+        
+        // 10th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.5; // Y coordinate
+        coord[2] = -1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[10].SetNodeId(10);
+        gmesh_NonThreeDHexa->NodeVec()[10].SetCoord(coord);
+        NonHexahedron_topology[10] = 10;
+        
+        
+        // 11th node
+        coord[0] = -1.5; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = -1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[11].SetNodeId(11);
+        gmesh_NonThreeDHexa->NodeVec()[11].SetCoord(coord);
+        NonHexahedron_topology[11] = 11;
+        
+        
+        // 12th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.5; // Y coordinate
+        coord[2] = -1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[12].SetNodeId(12);
+        gmesh_NonThreeDHexa->NodeVec()[12].SetCoord(coord);
+        NonHexahedron_topology[12] = 12;
+        
+        
+        // 13th node
+        coord[0] = 1.5; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[13].SetNodeId(13);
+        gmesh_NonThreeDHexa->NodeVec()[13].SetCoord(coord);
+        NonHexahedron_topology[13] = 13;
+        
+        
+        // 14th node
+        coord[0] = 0.0; // x coordinate
+        coord[1] = 1.5; // Y coordinate
+        coord[2] = 1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[14].SetNodeId(14);
+        gmesh_NonThreeDHexa->NodeVec()[14].SetCoord(coord);
+        NonHexahedron_topology[14] = 14;
+        
+        
+        // 15th node
+        coord[0] = -1.5; // x coordinate
+        coord[1] = 0.0; // Y coordinate
+        coord[2] = 1.5; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[15].SetNodeId(15);
+        gmesh_NonThreeDHexa->NodeVec()[15].SetCoord(coord);
+        NonHexahedron_topology[15] = 15;
+        
+        
+        // 16th node
+        coord[0] = -1.5; // x coordinate
+        coord[1] = -1.5; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[16].SetNodeId(16);
+        gmesh_NonThreeDHexa->NodeVec()[16].SetCoord(coord);
+        NonHexahedron_topology[16] = 16;
+        
+        
+        // 17th node
+        coord[0] = 1.5; // x coordinate
+        coord[1] = -1.5; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[17].SetNodeId(17);
+        gmesh_NonThreeDHexa->NodeVec()[17].SetCoord(coord);
+        NonHexahedron_topology[17] = 17;
+        
+        // 18th node
+        coord[0] = 1.5; // x coordinate
+        coord[1] = 1.5; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[18].SetNodeId(18);
+        gmesh_NonThreeDHexa->NodeVec()[18].SetCoord(coord);
+        NonHexahedron_topology[18] = 18;
+        
+        
+        // 19th node
+        coord[0] = -1.5; // x coordinate
+        coord[1] = 1.5; // Y coordinate
+        coord[2] = 0.0; // Z coordinate
+        gmesh_NonThreeDHexa->NodeVec()[19].SetNodeId(19);
+        gmesh_NonThreeDHexa->NodeVec()[19].SetCoord(coord);
+        NonHexahedron_topology[19] = 19;
+        
+        
+        
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticCube> (elementid, NonHexahedron_topology, physical_id, *gmesh_NonThreeDHexa);
+    }
+    
+    
+    // ********************* boundary ****************
+
+    
+    // in front
+
+    {
+        // 1st node
+        NonQuadrilateral_topology[0] = 0;
+        
+        // 2nd node
+        NonQuadrilateral_topology[1] = 1;
+        
+        // 3rd node
+        NonQuadrilateral_topology[2] = 5;
+        
+        // 4th node
+        NonQuadrilateral_topology[3] = 4;
+        
+        // 5th node
+        NonQuadrilateral_topology[4] = 8;
+        
+        // 6th node
+        NonQuadrilateral_topology[5] = 17;
+        
+        // 7th node
+        NonQuadrilateral_topology[6] = 12;
+        
+        // 8th node
+        NonQuadrilateral_topology[7] = 16;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (elementid, NonQuadrilateral_topology, bc_front, *gmesh_NonThreeDHexa);
+    }
+
+    // right
+    
+    {
+        // 1st node
+        NonQuadrilateral_topology[0] = 1;
+        
+        // 2nd node
+        NonQuadrilateral_topology[1] = 2;
+        
+        // 3rd node
+        NonQuadrilateral_topology[2] = 6;
+        
+        // 4th node
+        NonQuadrilateral_topology[3] = 5;
+        
+        // 5th node
+        NonQuadrilateral_topology[4] = 9;
+        
+        // 6th node
+        NonQuadrilateral_topology[5] = 18;
+        
+        // 7th node
+        NonQuadrilateral_topology[6] = 13;
+        
+        // 8th node
+        NonQuadrilateral_topology[7] = 17;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (elementid, NonQuadrilateral_topology, bc_right, *gmesh_NonThreeDHexa);
+    }
+    
+    // back
+    
+    {
+        // 1st node
+        NonQuadrilateral_topology[0] = 3;
+        
+        // 2nd node
+        NonQuadrilateral_topology[1] = 2;
+        
+        // 3rd node
+        NonQuadrilateral_topology[2] = 6;
+        
+        // 4th node
+        NonQuadrilateral_topology[3] = 7;
+        
+        // 5th node
+        NonQuadrilateral_topology[4] = 10;
+        
+        // 6th node
+        NonQuadrilateral_topology[5] = 18;
+        
+        // 7th node
+        NonQuadrilateral_topology[6] = 14;
+        
+        // 8th node
+        NonQuadrilateral_topology[7] = 19;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (elementid, NonQuadrilateral_topology, bc_back, *gmesh_NonThreeDHexa);
+    }
+    
+    // left
+    
+    {
+        // 1st node
+        NonQuadrilateral_topology[0] = 0;
+        
+        // 2nd node
+        NonQuadrilateral_topology[1] = 3;
+        
+        // 3rd node
+        NonQuadrilateral_topology[2] = 7;
+        
+        // 4th node
+        NonQuadrilateral_topology[3] = 4;
+        
+        // 5th node
+        NonQuadrilateral_topology[4] = 11;
+        
+        // 6th node
+        NonQuadrilateral_topology[5] = 19;
+        
+        // 7th node
+        NonQuadrilateral_topology[6] = 15;
+        
+        // 8th node
+        NonQuadrilateral_topology[7] = 16;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (elementid, NonQuadrilateral_topology, bc_left, *gmesh_NonThreeDHexa);
+    }
+    
+    
+    // bottom
+    
+    {
+        // 1st node
+        NonQuadrilateral_topology[0] = 0;
+        
+        // 2nd node
+        NonQuadrilateral_topology[1] = 1;
+        
+        // 3rd node
+        NonQuadrilateral_topology[2] = 2;
+        
+        // 4th node
+        NonQuadrilateral_topology[3] = 3;
+        
+        // 5th node
+        NonQuadrilateral_topology[4] = 8;
+        
+        // 6th node
+        NonQuadrilateral_topology[5] = 9;
+        
+        // 7th node
+        NonQuadrilateral_topology[6] = 10;
+        
+        // 8th node
+        NonQuadrilateral_topology[7] = 11;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (elementid, NonQuadrilateral_topology, bc_bottom, *gmesh_NonThreeDHexa);
+    }
+    
+    // top
+    
+    {
+        // 1st node
+        NonQuadrilateral_topology[0] = 4;
+        
+        // 2nd node
+        NonQuadrilateral_topology[1] = 5;
+        
+        // 3rd node
+        NonQuadrilateral_topology[2] = 6;
+        
+        // 4th node
+        NonQuadrilateral_topology[3] = 7;
+        
+        // 5th node
+        NonQuadrilateral_topology[4] = 12;
+        
+        // 6th node
+        NonQuadrilateral_topology[5] = 13;
+        
+        // 7th node
+        NonQuadrilateral_topology[6] = 14;
+        
+        // 8th node
+        NonQuadrilateral_topology[7] = 15;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZQuadraticQuad> (elementid, NonQuadrilateral_topology, bc_top, *gmesh_NonThreeDHexa);
+    }
+    
+
+    // Build the mesh
+    gmesh_NonThreeDHexa->BuildConnectivity();
+    
+    
+    return gmesh_NonThreeDHexa;
+    
+}
+
+
 
