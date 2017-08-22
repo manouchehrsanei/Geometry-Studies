@@ -30,6 +30,10 @@
 #include "tpzquadratictetra.h"
 #include "tpzquadraticprism.h"
 
+#include "tpzarc3d.h"
+#include "tpzellipse3d.h"
+#include "tpzgeoblend.h"
+
 
 // ************************************* (Geometry linear description: Zero and One D element) ******************
 
@@ -92,6 +96,14 @@ void NonThreeDHexaElements();
 // ************************************* (Create nonlinear meshes: 3D) ********************************************
 
 TPZGeoMesh *CreateNonThreeDHexaGMesh(long nnodesthrehex, REAL Lx, REAL Ly, REAL Lz);
+
+TPZGeoMesh *CreateThreeDarcGMesh(long nnodesarc, REAL Rad);
+
+// --------------------------------------
+
+void EllipsthreeMeshGenerate();
+
+
 
 
 
@@ -234,8 +246,28 @@ int main() {
     TPZVTKGeoMesh::PrintGMeshVTK(gmesh_NonThreeDHexa, vtkgmeshNonThreeDHexa);
     
     
-    
+    // ----------------------------------------------------------------------------------------
 
+    REAL Rad = 1.;
+    long nnodesarc = 9; // number of divition
+    
+    TPZGeoMesh *gmesh_ThreeDarc = CreateThreeDarcGMesh(nnodesarc, Rad); // function to create the 3D geometric mesh
+    
+    std::ofstream outgmeshThreeDarc("geomesh_ThreeDarc.txt");
+    gmesh_ThreeDarc->Print(outgmeshThreeDarc);
+    
+    std::ofstream vtkgmeshThreeDarc("geomesh_ThreeDarc.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDarc, vtkgmeshThreeDarc);
+
+
+    // ----------------------------------------------------------------------------------------
+    
+    
+    EllipsthreeMeshGenerate();
+
+    
+    
+    
     
     
     return 0;
@@ -4264,5 +4296,255 @@ TPZGeoMesh *CreateNonThreeDHexaGMesh(long nnodesthrehex, REAL Lx, REAL Ly, REAL 
     
 }
 
+
+
+// ************************************** Create 3D arc  ***************************************
+
+TPZGeoMesh *CreateThreeDarcGMesh(long nnodesarc, REAL Rad)
+
+
+{
+    TPZGeoMesh * gmesh_ThreeDarc = new TPZGeoMesh; // Initilized of TPZGeoMesh class
+    
+    long geometry_dim = 2; // geometry dimension
+    REAL ModelRadius = Rad;
+    
+    std::string name("geomesh ThreeDarc"); // geometry name
+    gmesh_ThreeDarc->SetName(name);
+    gmesh_ThreeDarc->SetDimension(geometry_dim);
+    
+    
+    gmesh_ThreeDarc->NodeVec().Resize(nnodesarc); // Resize of the geometry mesh
+    TPZVec<TPZGeoNode> Node(nnodesarc);
+
+    
+    TPZVec<long> Arc_topology(3,0.0);
+    TPZVec<REAL> coord(3,0.0);
+    
+    // Index of element
+    
+    long elementid = 0;
+    
+    int arc1 = -1;
+    int arc2 = -2;
+    int arc3 = -3;
+    int arc4 = -4;
+
+    // Setting node coordantes for Arc
+    int id = 0;
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,0.0 );//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,0.0);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,ModelRadius );//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,0.0);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,0.0 );//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,ModelRadius);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,-ModelRadius );//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,0.0);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,0.0 );//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,-ModelRadius);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,sqrt(2)*ModelRadius/2.);//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,sqrt(2)*ModelRadius/2.);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,-sqrt(2)*ModelRadius/2.);//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,sqrt(2)*ModelRadius/2.);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,-sqrt(2)*ModelRadius/2.);//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,-sqrt(2)*ModelRadius/2.);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    gmesh_ThreeDarc->NodeVec()[id].SetNodeId(id);
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(0,sqrt(2)*ModelRadius/2.);//coord X
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(1,-sqrt(2)*ModelRadius/2.);//coord Y
+    gmesh_ThreeDarc->NodeVec()[id].SetCoord(2,0.0);//coord Z
+    id++;
+    
+    // Create Geometrical Arc #1
+    // Definition of Arc coordenates
+    Arc_topology[0] = 1;
+    Arc_topology[1] = 2;
+    Arc_topology[2] = 5;
+    new TPZGeoElRefPattern< pzgeom::TPZArc3D> (elementid, Arc_topology, arc1, *gmesh_ThreeDarc);
+    elementid++;
+    
+    // Create Geometrical Arc #2
+    Arc_topology[0] = 2;
+    Arc_topology[1] = 3;
+    Arc_topology[2] = 6;
+    new TPZGeoElRefPattern< pzgeom::TPZArc3D> (elementid, Arc_topology, arc2, *gmesh_ThreeDarc);
+    elementid++;
+    
+    // Create Geometrical Arc #3
+    Arc_topology[0] = 3;
+    Arc_topology[1] = 4;
+    Arc_topology[2] = 7;
+    new TPZGeoElRefPattern< pzgeom::TPZArc3D> (elementid, Arc_topology, arc3, *gmesh_ThreeDarc);
+    elementid++;
+    
+    // Create Geometrical Arc #4
+    Arc_topology[0] = 4;
+    Arc_topology[1] = 1;
+    Arc_topology[2] = 8;
+    new TPZGeoElRefPattern< pzgeom::TPZArc3D> (elementid, Arc_topology, arc4, *gmesh_ThreeDarc);
+    elementid++;
+    
+    // Build the mesh
+    gmesh_ThreeDarc->BuildConnectivity();
+    
+    
+    return gmesh_ThreeDarc;
+    
+}
+
+// ************************************** Create 3D elipse  ***************************************
+
+void EllipsthreeMeshGenerate()
+{
+  
+    TPZGeoMesh * gmesh_Ellipsthree = new TPZGeoMesh;
+    long geometry_dim = 3; // geometry dimension
+    long nnodes = 4; // number of nodes
+
+    std::string name("geomesh Ellipsthree"); // geometry name
+    
+    gmesh_Ellipsthree->SetName(name);
+    gmesh_Ellipsthree->SetDimension(geometry_dim);
+    gmesh_Ellipsthree->NodeVec().Resize(nnodes); // Resize of the geometry mesh
+
+
+    
+    TPZManVector<long,4> EllipsSur_topology(4);
+    TPZManVector<long,2> EllipsLin_topology(2);
+    
+    TPZManVector<REAL,3> coord(3,0.);
+
+    // Index of element
+    int physical_id = 1;
+    long elementid = 0;
+    
+    const REAL semiX = 2.0;
+    const REAL semiY = 1.0;
+    
+    
+    TPZManVector<REAL,3> ellipOrigin(3,0.);
+    TPZManVector<REAL,3> semiAxeX(3,0.);
+    TPZManVector<REAL,3> semiAxeY(3,0.);
+    
+    semiAxeX[0] = semiX;
+    semiAxeY[1] = semiY;
+
+    
+    // 0th element
+    {
+    
+    REAL innerRectangleLx = 2.*semiX/sqrt(2.);
+    REAL innerRectangleLy = 2.*semiY/sqrt(2.);
+
+    // 0th node
+    coord[0] = -innerRectangleLx/2.; // x coordinate
+    coord[1] = -innerRectangleLy/2.; // Y coordinate
+    coord[2] = 0.0; // Z coordinate
+    gmesh_Ellipsthree->NodeVec()[0].SetNodeId(0);
+    gmesh_Ellipsthree->NodeVec()[0].SetCoord(coord);
+    EllipsSur_topology[0] = 0;
+
+    // 1st node
+    coord[0] = +innerRectangleLx/2.; // x coordinate
+    coord[1] = -innerRectangleLy/2.; // Y coordinate
+    coord[2] = 0.0; // Z coordinate
+    gmesh_Ellipsthree->NodeVec()[1].SetNodeId(1);
+    gmesh_Ellipsthree->NodeVec()[1].SetCoord(coord);
+    EllipsSur_topology[1] = 1;
+    
+    // 2nd node
+    coord[0] = +innerRectangleLx/2.; // x coordinate
+    coord[1] = +innerRectangleLy/2.; // Y coordinate
+    coord[2] = 0.0; // Z coordinate
+    gmesh_Ellipsthree->NodeVec()[2].SetNodeId(2);
+    gmesh_Ellipsthree->NodeVec()[2].SetCoord(coord);
+    EllipsSur_topology[2] = 2;
+
+    // 3rd node
+    coord[0] = -innerRectangleLx/2.; // x coordinate
+    coord[1] = +innerRectangleLy/2.; // Y coordinate
+    coord[2] = 0.0; // Z coordinate
+    gmesh_Ellipsthree->NodeVec()[3].SetNodeId(3);
+    gmesh_Ellipsthree->NodeVec()[3].SetCoord(coord);
+    EllipsSur_topology[3] = 3;
+
+    new TPZGeoElRefPattern<pzgeom::TPZGeoBlend<pzgeom::TPZGeoQuad> >(elementid, EllipsSur_topology, physical_id, *gmesh_Ellipsthree);
+
+    }
+    
+    {
+    // 1st element
+    EllipsLin_topology[0] = 0;
+    EllipsLin_topology[1] = 1;
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge4 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    ellipEdge4->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
+    }
+    
+    {
+    // 2nd element
+    EllipsLin_topology[0] = 1;
+    EllipsLin_topology[1] = 2;
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge5 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    ellipEdge5->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
+    }
+    
+    {
+    // 3rd element
+    EllipsLin_topology[0] = 2;
+    EllipsLin_topology[1] = 3;
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge6 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    ellipEdge6->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
+    }
+    
+    {
+    // 4th element
+    EllipsLin_topology[0] = 3;
+    EllipsLin_topology[1] = 0;
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge7 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    ellipEdge7->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
+    }
+    
+    gmesh_Ellipsthree->BuildConnectivity();
+    
+    
+    std::ofstream outgmeshEllipsthree("geometry_Ellipsthree.txt");
+    gmesh_Ellipsthree->Print(outgmeshEllipsthree);
+    
+    
+    std::ofstream vtkgmeshEllipsthree("geomesh_Ellipsthree.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_Ellipsthree, vtkgmeshEllipsthree);
+    
+}
 
 
