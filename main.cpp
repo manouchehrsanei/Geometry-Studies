@@ -104,8 +104,15 @@ TPZGeoMesh *CreateThreeDarcGMesh(long nnodesarc, REAL Rad);
 void EllipsthreeMeshGenerate();
 
 
+// ************************************* (Finding nodes and elements) ********************************************
+
+TPZGeoMesh *CreateOneDFindNoElGMesh(long num_elem, REAL size_elem);
 
 
+
+static REAL PolinomialFunction(REAL x);
+
+            
 
 
 // ******************************************** (main of program) ***********************************************
@@ -114,164 +121,240 @@ void EllipsthreeMeshGenerate();
 int main() {
 
     
-    // ********************************* (linear elements) ******************************************************
-
-    ZeroDElements();
-    OneDElements();
-    
-    TwoDTriElements();
-    TwoDQuadElements();
-    
-    ThreeDTetraElements();
-    ThreeDPyraElements();
-    ThreeDPrisElements();
-    ThreeDHexaElements();
-    
-    
-    // ******************* (Create linear meshes: 1D) ***********************************************************
-    
-    REAL domain = 1.;
-    long num_el = 10;
-    REAL size_el = domain/num_el;
-    
-    TPZGeoMesh *gmesh_OneDL = CreateOneDLGMesh(num_el, size_el); // function to create the 1D geometric mesh
-    
-    std::ofstream outgmeshOneDL("geomesh_OneDL.txt");
-    gmesh_OneDL->Print(outgmeshOneDL);
-    
-    std::ofstream vtkgmeshOneDL("geomesh_OneDL.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDL, vtkgmeshOneDL);
-
-    // ---------------------------------------------------------------------------------------
-    
-    
-    TPZGeoMesh *gmesh_OneDNL = CreateOneDNLGMesh(num_el, size_el); // function to create the 1D geometric mesh
-    
-    std::ofstream outgmeshOneDNL("geomesh_OneDNL.txt");
-    gmesh_OneDNL->Print(outgmeshOneDNL);
-    
-    std::ofstream vtkgmeshOneDNL("geomesh_OneDNL.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDNL, vtkgmeshOneDNL);
-    
-    // ********************************* (Create linear meshes: 2D) *******************************************
-
-    long num_divsi = 2; // number of divition
-    REAL Lx = 1.; // length of domain in x direction
-    REAL Ly = 1.; // length of domain in y direction
-    
-    TPZGeoMesh *gmesh_TwoDSimp = CreateTwoDSimpGMesh(num_divsi, Lx, Ly); // function to create the 2D geometric mesh
-    
-    std::ofstream outgmeshTwoDSimp("geomesh_TwoDSimp.txt");
-    gmesh_TwoDSimp->Print(outgmeshTwoDSimp);
-    
-    std::ofstream vtkgmeshTwoDSimp("geomesh_TwoDSimp.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDSimp, vtkgmeshTwoDSimp);
-    
-    
-    // ---------------------------------------------------------------------------------------
-    
-    long nnodes = 9; // Number of the nodes
-    
-    TPZGeoMesh *gmesh_TwoDTri = CreateTwoDTriGMesh(nnodes, Lx, Ly); // function to create the 2D geometric mesh
-    
-    std::ofstream outgmeshTwoDTri("geomesh_TwoDTri.txt");
-    gmesh_TwoDTri->Print(outgmeshTwoDTri);
-    
-    std::ofstream vtkgmeshTwoDTri("geomesh_TwoDTri.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDTri, vtkgmeshTwoDTri);
-    
-    
-    // ---------------------------------------------------------------------------------------
-    
-    long nnodesqu = 10; // number of divition
-    
-    TPZGeoMesh *gmesh_TwoDQuad = CreateTwoDQuadGMesh(nnodesqu, Lx, Ly); // function to create the 2D geometric mesh
-    
-    std::ofstream outgmeshTwoDQuad("geomesh_TwoDQuad.txt");
-    gmesh_TwoDQuad->Print(outgmeshTwoDQuad);
-    
-    std::ofstream vtkgmeshTwoDQuad("geomesh_TwoDQuad.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDQuad, vtkgmeshTwoDQuad);
-
-    
-    // ****************************** (Create linear meshes: 3D) ********************************************
-    
-    REAL Lz = 1.;
-    long nnodesthr = 25; // number of divition
-    
-    TPZGeoMesh *gmesh_ThreeDHexPri = CreateThreeDHexPriGMesh(nnodesthr, Lx, Ly, Lz); // function to create the 3D geometric mesh
-    
-    std::ofstream outgmeshThreeDHexPri("geomesh_ThreeDHexPri.txt");
-    gmesh_ThreeDHexPri->Print(outgmeshThreeDHexPri);
-    
-    std::ofstream vtkgmeshThreeDHexPri("geomesh_ThreeDHexPri.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPri, vtkgmeshThreeDHexPri);
-    
-    // ----------------------------------------------------------------------------------------
-    
-    long nnodesthrhpt = 12; // number of divition
-    
-    TPZGeoMesh *gmesh_ThreeDHexPrytet = CreateThreeDHexPrytetGMesh(nnodesthrhpt, Lx, Ly, Lz); // function to create the 3D geometric mesh
-    
-    std::ofstream outgmeshThreeDHexPrytet("geomesh_ThreeDHexPrytet.txt");
-    gmesh_ThreeDHexPrytet->Print(outgmeshThreeDHexPrytet);
-    
-    std::ofstream vtkgmeshThreeDHexPrytet("geomesh_ThreeDHexPrytet.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPrytet, vtkgmeshThreeDHexPrytet);
-    
-    
-    // *************************** (nonlinear elements) *****************************************************
-    
-    NonOneDElements();
-    
-    NonTwoDTriElements();
-    NonTwoDQuadElements();
-    
-    NonThreeDTetraElements();
-    NonThreeDPyraElements();
-    NonThreeDPrisElements();
-    NonThreeDHexaElements();
-    
-    
-    // ----------------------------------------------------------------------------------------
-    
-    long nnodesthrehex = 20; // number of divition
-    
-    TPZGeoMesh *gmesh_NonThreeDHexa = CreateNonThreeDHexaGMesh(nnodesthrehex, Lx, Ly, Lz); // function to create the 3D geometric mesh
-    
-    std::ofstream outgmeshNonThreeDHexa("geomesh_NonThreeDHexa.txt");
-    gmesh_NonThreeDHexa->Print(outgmeshNonThreeDHexa);
-    
-    std::ofstream vtkgmeshNonThreeDHexa("geomesh_NonThreeDHexa.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_NonThreeDHexa, vtkgmeshNonThreeDHexa);
-    
-    
-    // ----------------------------------------------------------------------------------------
-
-    REAL Rad = 1.;
-    long nnodesarc = 9; // number of divition
-    
-    TPZGeoMesh *gmesh_ThreeDarc = CreateThreeDarcGMesh(nnodesarc, Rad); // function to create the 3D geometric mesh
-    
-    std::ofstream outgmeshThreeDarc("geomesh_ThreeDarc.txt");
-    gmesh_ThreeDarc->Print(outgmeshThreeDarc);
-    
-    std::ofstream vtkgmeshThreeDarc("geomesh_ThreeDarc.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDarc, vtkgmeshThreeDarc);
-
-
-    // ----------------------------------------------------------------------------------------
-    
-    
-    EllipsthreeMeshGenerate();
+//    // ********************************* (linear elements) ******************************************************
+//
+//    ZeroDElements();
+//    OneDElements();
+//    
+//    TwoDTriElements();
+//    TwoDQuadElements();
+//    
+//    ThreeDTetraElements();
+//    ThreeDPyraElements();
+//    ThreeDPrisElements();
+//    ThreeDHexaElements();
+//    
+//    
+//    // ******************* (Create linear meshes: 1D) ***********************************************************
+//    
+//    REAL domain = 1.;
+//    long num_el = 10;
+//    REAL size_el = domain/num_el;
+//    
+//    TPZGeoMesh *gmesh_OneDL = CreateOneDLGMesh(num_el, size_el); // function to create the 1D geometric mesh
+//    
+//
+//
+//    // ---------------------------------------------------------------------------------------
+//    
+//    
+//    TPZGeoMesh *gmesh_OneDNL = CreateOneDNLGMesh(num_el, size_el); // function to create the 1D geometric mesh
+//    
+//
+//    
+//    // ********************************* (Create linear meshes: 2D) *******************************************
+//
+//    long num_divsi = 2; // number of divition
+//    REAL Lx = 1.; // length of domain in x direction
+//    REAL Ly = 1.; // length of domain in y direction
+//    
+//    TPZGeoMesh *gmesh_TwoDSimp = CreateTwoDSimpGMesh(num_divsi, Lx, Ly); // function to create the 2D geometric mesh
+//
+//    
+//    
+//    // ---------------------------------------------------------------------------------------
+//    
+//    long nnodes = 9; // Number of the nodes
+//    
+//    TPZGeoMesh *gmesh_TwoDTri = CreateTwoDTriGMesh(nnodes, Lx, Ly); // function to create the 2D geometric mesh
+//    
+//
+//    
+//    
+//    // ---------------------------------------------------------------------------------------
+//    
+//    long nnodesqu = 10; // number of divition
+//    
+//    TPZGeoMesh *gmesh_TwoDQuad = CreateTwoDQuadGMesh(nnodesqu, Lx, Ly); // function to create the 2D geometric mesh
+//    
+//
+//    
+//    // ****************************** (Create linear meshes: 3D) ********************************************
+//    
+//    REAL Lz = 1.;
+//    long nnodesthr = 25; // number of divition
+//    
+//    TPZGeoMesh *gmesh_ThreeDHexPri = CreateThreeDHexPriGMesh(nnodesthr, Lx, Ly, Lz); // function to create the 3D geometric mesh
+//
+//    
+//    // ----------------------------------------------------------------------------------------
+//    
+//    long nnodesthrhpt = 12; // number of divition
+//    
+//    TPZGeoMesh *gmesh_ThreeDHexPrytet = CreateThreeDHexPrytetGMesh(nnodesthrhpt, Lx, Ly, Lz); // function to create the 3D geometric mesh
+//    
+//
+//    
+//    
+//    // *************************** (nonlinear elements) *****************************************************
+//    
+//    NonOneDElements();
+//    
+//    NonTwoDTriElements();
+//    NonTwoDQuadElements();
+//    
+//    NonThreeDTetraElements();
+//    NonThreeDPyraElements();
+//    NonThreeDPrisElements();
+//    NonThreeDHexaElements();
+//    
+//    
+//    // ----------------------------------------------------------------------------------------
+//    
+//    long nnodesthrehex = 20; // number of divition
+//    
+//    TPZGeoMesh *gmesh_NonThreeDHexa = CreateNonThreeDHexaGMesh(nnodesthrehex, Lx, Ly, Lz); // function to create the 3D geometric mesh
+//
+//    
+//    
+//    // ----------------------------------------------------------------------------------------
+//
+//    REAL Rad = 1.;
+//    long nnodesarc = 9; // number of divition
+//    
+//    TPZGeoMesh *gmesh_ThreeDarc = CreateThreeDarcGMesh(nnodesarc, Rad); // function to create the 3D geometric mesh
+//    
+//
+//
+//
+//    // ----------------------------------------------------------------------------------------
+//    
+//    
+//    EllipsthreeMeshGenerate();
 
     
+    // ************************************* (Finding nodes and elements) ********************************************
+    
+//    REAL OneDdomain = 1.;
+//    long num_elem = 20;
+//    REAL size_elem = OneDdomain/num_elem;
+//    
+//    TPZGeoMesh *gmesh_OneDFindNoEl = CreateOneDFindNoElGMesh(num_elem, size_elem); // function to create the 1D geometric mesh
     
     
+    // ------------------------------ finding the boundary element anc change the id
+//    long target_id = 100;
+//    
+//    long nel = gmesh_OneDFindNoEl->NElements();
+//    
+//    for (long iel = 0; iel < nel; iel++)
+//    {
+//        TPZGeoEl * element = gmesh_OneDFindNoEl->Element(iel);
+//        
+//        int dim = element->Dimension();
+//        if (dim == 0)
+//        { //Filtering boundary elements
+//            std::cout << "before = " <<std::endl;
+//            element->Print();
+//    
+//            element->SetMaterialId(target_id);
+//            std::cout << "after = " <<std::endl;
+//            element->Print();
+//        }
+//    }
     
+    // --------------------------- finding the espeical element and change the coordiantes
     
-    return 0;
-}
+//    long target_index = 10;
+//    REAL z_modified = 1.0;
+//    
+//    bool one_way = false;
+//    
+//    TPZVec<REAL> x(3,0.0);
+//    
+//    TPZGeoEl * element = gmesh_OneDFindNoEl->Element(target_index);
+//    int n_nodes = element->NNodes();
+//    for (int i = 0; i < n_nodes; i++) {
+//        TPZGeoNode & inode = element->Node(i);
+//        
+//        if (one_way) {
+//            inode.GetCoordinates(x);
+//            x[2] = z_modified;
+//            inode.SetCoord(x);
+//        }
+//        else{
+//            inode.SetCoord(2, z_modified);
+//        }
+//        
+//    }
+//    
+//    std::ofstream outgmeshOneDFindNoEl("geomesh_OneDFindNoElModified.txt");
+//    gmesh_OneDFindNoEl->Print(outgmeshOneDFindNoEl);
+//    
+//    std::ofstream vtkgmeshOneDFindNoEl("geomesh_OneDFindNoElModified.vtk");
+//    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDFindNoEl, vtkgmeshOneDFindNoEl);
+    
+    // --------------------------- finding the jacobian of espeical element
+//    
+//    long target_index = 10;
+//    REAL z_modified = 1.0;
+//    TPZVec<REAL> x(3,0.0);
+//
+//    TPZVec<REAL> par_coordinate(3,0.0);
+//    TPZFMatrix<REAL> jacobian(3,3);
+//    TPZFMatrix<REAL> Axes(3,3);
+//    REAL detJacobian;
+//    REAL detJacobianSub;
+//    REAL detJacobianPlu;
+//
+//
+//    TPZFMatrix<REAL> InvJac(3,3);
+//    
+//    // -------------------- the element before the target index ------------
+//    
+//
+//    TPZGeoEl * elementTarget = gmesh_OneDFindNoEl->Element(target_index);
+//    int nnodes = elementTarget->NNodes();
+//    for (int i = 0; i < nnodes; i++)
+//    {
+//        TPZGeoNode & inode = elementTarget->Node(i);
+//        
+//        inode.GetCoordinates(x);
+//        x[2] = z_modified;
+//        inode.SetCoord(x);
+//
+//    }
+//    
+//    TPZManVector<REAL,3> x_1(3,0.0);
+//    elementTarget->X(par_coordinate, x_1);
+//    elementTarget->Jacobian(par_coordinate, jacobian, Axes, detJacobian, InvJac);
+//    
+//    TPZManVector<REAL,3> x_2(3,0.0);
+//    TPZGeoEl * elementTarSub = gmesh_OneDFindNoEl->Element(target_index-1);
+//    elementTarSub->X(par_coordinate, x_2);
+//    elementTarSub->Jacobian(par_coordinate, jacobian, Axes, detJacobianSub, InvJac);
+//    
+//    
+//    TPZManVector<REAL,3> x_3(3,0.0);
+//    TPZGeoEl * elementTarPlu = gmesh_OneDFindNoEl->Element(target_index+1);
+//    elementTarPlu->X(par_coordinate, x_3);
+//    elementTarPlu->Jacobian(par_coordinate, jacobian, Axes, detJacobianPlu, InvJac);
+//    
+    
+    // ----------------------------------- integral -----------------------------
+//    int x=1;
+//    double val;
+//    PolinomialFunction(x);
+//
+//    
+//    
+//    
+//    val = x*(1-x)*sin(2*x);
+//    TPZInt1d val;
+//
+//    
+//    return 0;
+//}
 
 
 
@@ -967,6 +1050,14 @@ TPZGeoMesh *CreateOneDLGMesh(long num_el, REAL size_el)
     
     gmesh_OneDL->BuildConnectivity(); // Construct mesh neighbor connectivity
     
+    
+    std::ofstream outgmeshOneDL("geomesh_OneDL.txt");
+    gmesh_OneDL->Print(outgmeshOneDL);
+    
+    std::ofstream vtkgmeshOneDL("geomesh_OneDL.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDL, vtkgmeshOneDL);
+    
+    
     return gmesh_OneDL;
 }
 
@@ -1037,6 +1128,12 @@ TPZGeoMesh *CreateOneDNLGMesh(long num_el, REAL size_el)
     
     
     gmesh_OneDNL->BuildConnectivity(); // Construct mesh neighbor connectivity
+    
+    std::ofstream outgmeshOneDNL("geomesh_OneDNL.txt");
+    gmesh_OneDNL->Print(outgmeshOneDNL);
+    
+    std::ofstream vtkgmeshOneDNL("geomesh_OneDNL.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDNL, vtkgmeshOneDNL);
     
     return gmesh_OneDNL;
 }
@@ -1156,6 +1253,14 @@ TPZGeoMesh *CreateTwoDSimpGMesh(int num_divsi, REAL Lx, REAL Ly)
             gel->Divide (children);
         }
     }
+    
+    
+    std::ofstream outgmeshTwoDSimp("geomesh_TwoDSimp.txt");
+    gmesh_TwoDSimp->Print(outgmeshTwoDSimp);
+    
+    std::ofstream vtkgmeshTwoDSimp("geomesh_TwoDSimp.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDSimp, vtkgmeshTwoDSimp);
+    
     
     return gmesh_TwoDSimp;
 
@@ -1454,7 +1559,11 @@ TPZGeoMesh *CreateTwoDTriGMesh(long nnodes, REAL Lx, REAL Ly)
     // Build the mesh
     gmesh_TwoDTri->BuildConnectivity();
     
+    std::ofstream outgmeshTwoDTri("geomesh_TwoDTri.txt");
+    gmesh_TwoDTri->Print(outgmeshTwoDTri);
     
+    std::ofstream vtkgmeshTwoDTri("geomesh_TwoDTri.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDTri, vtkgmeshTwoDTri);
     return gmesh_TwoDTri;
     
 }
@@ -1758,7 +1867,13 @@ TPZGeoMesh *CreateTwoDQuadGMesh(long nnodesqu, REAL Lx, REAL Ly)
         // Build the mesh
         gmesh_TwoDQuad->BuildConnectivity();
         
-        
+    std::ofstream outgmeshTwoDQuad("geomesh_TwoDQuad.txt");
+    gmesh_TwoDQuad->Print(outgmeshTwoDQuad);
+    
+    std::ofstream vtkgmeshTwoDQuad("geomesh_TwoDQuad.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_TwoDQuad, vtkgmeshTwoDQuad);
+
+    
         return gmesh_TwoDQuad;
         
     }
@@ -2516,6 +2631,11 @@ TPZGeoMesh *CreateThreeDHexPriGMesh(long nnodesthr, REAL Lx, REAL Ly, REAL Lz)
     gmesh_ThreeDHexPri->BuildConnectivity();
     
     
+    std::ofstream outgmeshThreeDHexPri("geomesh_ThreeDHexPri.txt");
+    gmesh_ThreeDHexPri->Print(outgmeshThreeDHexPri);
+    
+    std::ofstream vtkgmeshThreeDHexPri("geomesh_ThreeDHexPri.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPri, vtkgmeshThreeDHexPri);
         return gmesh_ThreeDHexPri;
 
     }
@@ -2858,7 +2978,11 @@ TPZGeoMesh *CreateThreeDHexPrytetGMesh(long nnodesthrhpt, REAL Lx, REAL Ly, REAL
     
     // Build the mesh
     gmesh_ThreeDHexPrytet->BuildConnectivity();
+    std::ofstream outgmeshThreeDHexPrytet("geomesh_ThreeDHexPrytet.txt");
+    gmesh_ThreeDHexPrytet->Print(outgmeshThreeDHexPrytet);
     
+    std::ofstream vtkgmeshThreeDHexPrytet("geomesh_ThreeDHexPrytet.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDHexPrytet, vtkgmeshThreeDHexPrytet);
     
     return gmesh_ThreeDHexPrytet;
     
@@ -4291,6 +4415,11 @@ TPZGeoMesh *CreateNonThreeDHexaGMesh(long nnodesthrehex, REAL Lx, REAL Ly, REAL 
     // Build the mesh
     gmesh_NonThreeDHexa->BuildConnectivity();
     
+    std::ofstream outgmeshNonThreeDHexa("geomesh_NonThreeDHexa.txt");
+    gmesh_NonThreeDHexa->Print(outgmeshNonThreeDHexa);
+    
+    std::ofstream vtkgmeshNonThreeDHexa("geomesh_NonThreeDHexa.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_NonThreeDHexa, vtkgmeshNonThreeDHexa);
     
     return gmesh_NonThreeDHexa;
     
@@ -4418,7 +4547,11 @@ TPZGeoMesh *CreateThreeDarcGMesh(long nnodesarc, REAL Rad)
     // Build the mesh
     gmesh_ThreeDarc->BuildConnectivity();
     
+    std::ofstream outgmeshThreeDarc("geomesh_ThreeDarc.txt");
+    gmesh_ThreeDarc->Print(outgmeshThreeDarc);
     
+    std::ofstream vtkgmeshThreeDarc("geomesh_ThreeDarc.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ThreeDarc, vtkgmeshThreeDarc);
     return gmesh_ThreeDarc;
     
 }
@@ -4548,3 +4681,89 @@ void EllipsthreeMeshGenerate()
 }
 
 
+// ************************************* (Finding nodes and elements) ********************************************
+
+
+
+TPZGeoMesh *CreateOneDFindNoElGMesh(long num_elem, REAL size_elem)
+{
+    TPZGeoMesh * gmesh_OneDFindNoEl = new TPZGeoMesh; // Initilized of TPZGeoMesh class
+    
+    long geometry_dim = 1; // geometry dimension
+    std::string name("geomesh OneDFindNoEl"); // geometry name
+    
+    gmesh_OneDFindNoEl->SetName(name);
+    gmesh_OneDFindNoEl->SetDimension(geometry_dim);
+    
+    long num_nodes = num_elem + 1; // Number of the nodes
+    gmesh_OneDFindNoEl->NodeVec().Resize(num_nodes); // Resize of the geometry mesh
+    
+    
+    const int physical_id = 1; // Define id for material
+    const int bc0 = -1; // Define id for left boundary condition
+    const int bc1 = -2; // Define id for right boundary condition
+    
+    for (long i = 0 ; i < num_nodes; i++)
+    {
+        const REAL valElem = i * size_elem;
+        TPZVec <REAL> coord(3,0.);
+        coord[0] = valElem;
+        coord[1] = 0.0;
+        coord[2] = 0.0;
+        
+        gmesh_OneDFindNoEl->NodeVec()[i].SetCoord(coord); // Set of cordinate on the vector
+        gmesh_OneDFindNoEl->NodeVec()[i].SetNodeId(i); // The id identification
+    }
+    
+    // Creating linear element and  zero-dimensional boundary element
+    TPZVec <long> Linear_topology(2); // Vector of the node index: One-dimensional element
+    TPZVec <long> point_topology(1); // Vector of the node index: Zero-dimensional element
+    long element_id = 0;
+    
+    
+    // Elements
+    
+    for (long iel = 0; iel < num_elem; iel++)
+    {
+        const long inod_l = iel;
+        const long inod_r = iel + 1;
+        Linear_topology[0] = inod_l;
+        Linear_topology[1] = inod_r;
+        
+        new TPZGeoElRefPattern< pzgeom::TPZGeoLinear> (element_id, Linear_topology, physical_id, *gmesh_OneDFindNoEl);
+    }
+    
+    element_id++;
+    
+    
+    // Left boundary condition
+    point_topology[0] = 0;
+    new TPZGeoElRefPattern< pzgeom::TPZGeoPoint > (element_id, point_topology, bc0, *gmesh_OneDFindNoEl);
+    element_id++;
+    
+    
+    // Right boundary condition
+    point_topology[0] = num_nodes-1;
+    new TPZGeoElRefPattern< pzgeom::TPZGeoPoint > (element_id, point_topology, bc1, *gmesh_OneDFindNoEl);
+    
+    
+    gmesh_OneDFindNoEl->BuildConnectivity(); // Construct mesh neighbor connectivity
+    
+    std::ofstream outgmeshOneDFindNoEl("geomesh_OneDFindNoEl.txt");
+    gmesh_OneDFindNoEl->Print(outgmeshOneDFindNoEl);
+    
+    std::ofstream vtkgmeshOneDFindNoEl("geomesh_OneDFindNoEl.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDFindNoEl, vtkgmeshOneDFindNoEl);
+    
+    return gmesh_OneDFindNoEl;
+}
+
+
+// ----------------------------------------------------------------------------------------
+
+static REAL PolinomialFunction(REAL x)
+{
+    REAL valuex;
+    valuex = x*(1-x)*sin(2*x);
+    return valuex;
+}
