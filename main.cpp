@@ -34,6 +34,11 @@
 #include "tpzellipse3d.h"
 #include "tpzgeoblend.h"
 
+#include "pzvec.h"
+#include "pzquad.h"
+#include "tpzintrulep3d.h"
+
+
 
 // ************************************* (Geometry linear description: Zero and One D element) ******************
 
@@ -101,7 +106,7 @@ TPZGeoMesh *CreateThreeDarcGMesh(long nnodesarc, REAL Rad);
 
 // --------------------------------------
 
-void EllipsthreeMeshGenerate();
+void ThreeEllipsMeshGenerate();
 
 
 // ************************************* (Finding nodes and elements) ********************************************
@@ -110,9 +115,14 @@ TPZGeoMesh *CreateOneDFindNoElGMesh(long num_elem, REAL size_elem);
 
 
 
-static REAL PolinomialFunction(REAL x);
+// ************************************* (Integral) ********************************************
 
-            
+
+
+
+
+
+
 
 
 // ******************************************** (main of program) ***********************************************
@@ -120,7 +130,7 @@ static REAL PolinomialFunction(REAL x);
 
 int main() {
 
-    
+//    
 //    // ********************************* (linear elements) ******************************************************
 //
 //    ZeroDElements();
@@ -137,7 +147,7 @@ int main() {
 //    
 //    // ******************* (Create linear meshes: 1D) ***********************************************************
 //    
-//    REAL domain = 1.;
+//    REAL domain = 1.0;
 //    long num_el = 10;
 //    REAL size_el = domain/num_el;
 //    
@@ -155,8 +165,8 @@ int main() {
 //    // ********************************* (Create linear meshes: 2D) *******************************************
 //
 //    long num_divsi = 2; // number of divition
-//    REAL Lx = 1.; // length of domain in x direction
-//    REAL Ly = 1.; // length of domain in y direction
+//    REAL Lx = 1.0; // length of domain in x direction
+//    REAL Ly = 1.0; // length of domain in y direction
 //    
 //    TPZGeoMesh *gmesh_TwoDSimp = CreateTwoDSimpGMesh(num_divsi, Lx, Ly); // function to create the 2D geometric mesh
 //
@@ -181,7 +191,7 @@ int main() {
 //    
 //    // ****************************** (Create linear meshes: 3D) ********************************************
 //    
-//    REAL Lz = 1.;
+//    REAL Lz = 1.0;
 //    long nnodesthr = 25; // number of divition
 //    
 //    TPZGeoMesh *gmesh_ThreeDHexPri = CreateThreeDHexPriGMesh(nnodesthr, Lx, Ly, Lz); // function to create the 3D geometric mesh
@@ -219,7 +229,7 @@ int main() {
 //    
 //    // ----------------------------------------------------------------------------------------
 //
-//    REAL Rad = 1.;
+//    REAL Rad = 1.0;
 //    long nnodesarc = 9; // number of divition
 //    
 //    TPZGeoMesh *gmesh_ThreeDarc = CreateThreeDarcGMesh(nnodesarc, Rad); // function to create the 3D geometric mesh
@@ -227,21 +237,21 @@ int main() {
 //
 //
 //
-//    // ----------------------------------------------------------------------------------------
+////     ---------------------------------------  check shavad
+////    
+////    
+////    ThreeEllipsMeshGenerate();
+//
 //    
+//    // ************************************* (Finding nodes and elements) ********************************************
 //    
-//    EllipsthreeMeshGenerate();
-
-    
-    // ************************************* (Finding nodes and elements) ********************************************
-    
-//    REAL OneDdomain = 1.;
+//    REAL OneDdomain = 1.0;
 //    long num_elem = 20;
 //    REAL size_elem = OneDdomain/num_elem;
 //    
 //    TPZGeoMesh *gmesh_OneDFindNoEl = CreateOneDFindNoElGMesh(num_elem, size_elem); // function to create the 1D geometric mesh
-    
-    
+//    
+//    
     // ------------------------------ finding the boundary element anc change the id
 //    long target_id = 100;
 //    
@@ -294,7 +304,7 @@ int main() {
 //    std::ofstream vtkgmeshOneDFindNoEl("geomesh_OneDFindNoElModified.vtk");
 //    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDFindNoEl, vtkgmeshOneDFindNoEl);
     
-    // --------------------------- finding the jacobian of espeical element
+//    // --------------------------- finding the jacobian of espeical element
 //    
 //    long target_index = 10;
 //    REAL z_modified = 1.0;
@@ -314,8 +324,8 @@ int main() {
 //    
 //
 //    TPZGeoEl * elementTarget = gmesh_OneDFindNoEl->Element(target_index);
-//    int nnodes = elementTarget->NNodes();
-//    for (int i = 0; i < nnodes; i++)
+//    int numnodes = elementTarget->NNodes();
+//    for (int i = 0; i < numnodes; i++)
 //    {
 //        TPZGeoNode & inode = elementTarget->Node(i);
 //        
@@ -341,20 +351,12 @@ int main() {
 //    elementTarPlu->Jacobian(par_coordinate, jacobian, Axes, detJacobianPlu, InvJac);
 //    
     
-    // ----------------------------------- integral -----------------------------
-//    int x=1;
-//    double val;
-//    PolinomialFunction(x);
-//
+    
 //    
 //    
-//    
-//    val = x*(1-x)*sin(2*x);
-//    TPZInt1d val;
-//
-//    
-//    return 0;
-//}
+    
+    return 0;
+}
 
 
 
@@ -4558,18 +4560,18 @@ TPZGeoMesh *CreateThreeDarcGMesh(long nnodesarc, REAL Rad)
 
 // ************************************** Create 3D elipse  ***************************************
 
-void EllipsthreeMeshGenerate()
+void ThreeEllipsMeshGenerate()
 {
   
-    TPZGeoMesh * gmesh_Ellipsthree = new TPZGeoMesh;
-    long geometry_dim = 3; // geometry dimension
-    long nnodes = 4; // number of nodes
+    TPZGeoMesh * gmesh_ellipsthreed = new TPZGeoMesh;
+    long geometry_dim = 2; // geometry dimension
+    long num_nodes = 4; // number of nodes
 
-    std::string name("geomesh Ellipsthree"); // geometry name
+    std::string name("geomesh ellipsthreed"); // geometry name
     
-    gmesh_Ellipsthree->SetName(name);
-    gmesh_Ellipsthree->SetDimension(geometry_dim);
-    gmesh_Ellipsthree->NodeVec().Resize(nnodes); // Resize of the geometry mesh
+    gmesh_ellipsthreed->SetName(name);
+    gmesh_ellipsthreed->SetDimension(geometry_dim);
+    gmesh_ellipsthreed->NodeVec().Resize(num_nodes); // Resize of the geometry mesh
 
 
     
@@ -4604,35 +4606,35 @@ void EllipsthreeMeshGenerate()
     coord[0] = -innerRectangleLx/2.; // x coordinate
     coord[1] = -innerRectangleLy/2.; // Y coordinate
     coord[2] = 0.0; // Z coordinate
-    gmesh_Ellipsthree->NodeVec()[0].SetNodeId(0);
-    gmesh_Ellipsthree->NodeVec()[0].SetCoord(coord);
+    gmesh_ellipsthreed->NodeVec()[0].SetNodeId(0);
+    gmesh_ellipsthreed->NodeVec()[0].SetCoord(coord);
     EllipsSur_topology[0] = 0;
 
     // 1st node
     coord[0] = +innerRectangleLx/2.; // x coordinate
     coord[1] = -innerRectangleLy/2.; // Y coordinate
     coord[2] = 0.0; // Z coordinate
-    gmesh_Ellipsthree->NodeVec()[1].SetNodeId(1);
-    gmesh_Ellipsthree->NodeVec()[1].SetCoord(coord);
+    gmesh_ellipsthreed->NodeVec()[1].SetNodeId(1);
+    gmesh_ellipsthreed->NodeVec()[1].SetCoord(coord);
     EllipsSur_topology[1] = 1;
     
     // 2nd node
     coord[0] = +innerRectangleLx/2.; // x coordinate
     coord[1] = +innerRectangleLy/2.; // Y coordinate
     coord[2] = 0.0; // Z coordinate
-    gmesh_Ellipsthree->NodeVec()[2].SetNodeId(2);
-    gmesh_Ellipsthree->NodeVec()[2].SetCoord(coord);
+    gmesh_ellipsthreed->NodeVec()[2].SetNodeId(2);
+    gmesh_ellipsthreed->NodeVec()[2].SetCoord(coord);
     EllipsSur_topology[2] = 2;
 
     // 3rd node
     coord[0] = -innerRectangleLx/2.; // x coordinate
     coord[1] = +innerRectangleLy/2.; // Y coordinate
     coord[2] = 0.0; // Z coordinate
-    gmesh_Ellipsthree->NodeVec()[3].SetNodeId(3);
-    gmesh_Ellipsthree->NodeVec()[3].SetCoord(coord);
+    gmesh_ellipsthreed->NodeVec()[3].SetNodeId(3);
+    gmesh_ellipsthreed->NodeVec()[3].SetCoord(coord);
     EllipsSur_topology[3] = 3;
 
-    new TPZGeoElRefPattern<pzgeom::TPZGeoBlend<pzgeom::TPZGeoQuad> >(elementid, EllipsSur_topology, physical_id, *gmesh_Ellipsthree);
+    new TPZGeoElRefPattern<pzgeom::TPZGeoBlend<pzgeom::TPZGeoQuad> >(elementid, EllipsSur_topology, physical_id, *gmesh_ellipsthreed);
 
     }
     
@@ -4640,7 +4642,7 @@ void EllipsthreeMeshGenerate()
     // 1st element
     EllipsLin_topology[0] = 0;
     EllipsLin_topology[1] = 1;
-    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge4 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge4 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_ellipsthreed);
     ellipEdge4->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
     }
     
@@ -4648,7 +4650,7 @@ void EllipsthreeMeshGenerate()
     // 2nd element
     EllipsLin_topology[0] = 1;
     EllipsLin_topology[1] = 2;
-    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge5 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge5 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_ellipsthreed);
     ellipEdge5->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
     }
     
@@ -4656,7 +4658,7 @@ void EllipsthreeMeshGenerate()
     // 3rd element
     EllipsLin_topology[0] = 2;
     EllipsLin_topology[1] = 3;
-    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge6 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge6 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_ellipsthreed);
     ellipEdge6->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
     }
     
@@ -4664,19 +4666,19 @@ void EllipsthreeMeshGenerate()
     // 4th element
     EllipsLin_topology[0] = 3;
     EllipsLin_topology[1] = 0;
-    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge7 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_Ellipsthree);
+    TPZGeoElRefPattern<pzgeom::TPZEllipse3D> * ellipEdge7 = new TPZGeoElRefPattern<pzgeom::TPZEllipse3D> (elementid, EllipsLin_topology, physical_id, *gmesh_ellipsthreed);
     ellipEdge7->Geom().SetAxes(ellipOrigin,semiAxeX,semiAxeY);
     }
     
-    gmesh_Ellipsthree->BuildConnectivity();
+    gmesh_ellipsthreed->BuildConnectivity();
     
     
-    std::ofstream outgmeshEllipsthree("geometry_Ellipsthree.txt");
-    gmesh_Ellipsthree->Print(outgmeshEllipsthree);
+    std::ofstream outgmeshEllipsthree("geometry_ellipsthreed.txt");
+    gmesh_ellipsthreed->Print(outgmeshEllipsthree);
     
     
-    std::ofstream vtkgmeshEllipsthree("geomesh_Ellipsthree.vtk");
-    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_Ellipsthree, vtkgmeshEllipsthree);
+    std::ofstream vtkgmeshEllipsthree("geomesh_ellipsthreed.vtk");
+    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_ellipsthreed, vtkgmeshEllipsthree);
     
 }
 
@@ -4760,10 +4762,3 @@ TPZGeoMesh *CreateOneDFindNoElGMesh(long num_elem, REAL size_elem)
 
 
 // ----------------------------------------------------------------------------------------
-
-static REAL PolinomialFunction(REAL x)
-{
-    REAL valuex;
-    valuex = x*(1-x)*sin(2*x);
-    return valuex;
-}
