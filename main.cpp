@@ -130,128 +130,128 @@ TPZGeoMesh *CreateOneDFindNoElGMesh(long num_elem, REAL size_elem);
 
 int main() {
 
-//    
-//    // ********************************* (linear elements) ******************************************************
-//
-//    ZeroDElements();
-//    OneDElements();
-//    
-//    TwoDTriElements();
-//    TwoDQuadElements();
-//    
-//    ThreeDTetraElements();
-//    ThreeDPyraElements();
-//    ThreeDPrisElements();
-//    ThreeDHexaElements();
-//    
-//    
-//    // ******************* (Create linear meshes: 1D) ***********************************************************
-//    
-//    REAL domain = 1.0;
-//    long num_el = 10;
-//    REAL size_el = domain/num_el;
-//    
-//    TPZGeoMesh *gmesh_OneDL = CreateOneDLGMesh(num_el, size_el); // function to create the 1D geometric mesh
-//    
-//
-//
-//    // ---------------------------------------------------------------------------------------
-//    
-//    
-//    TPZGeoMesh *gmesh_OneDNL = CreateOneDNLGMesh(num_el, size_el); // function to create the 1D geometric mesh
-//    
-//
-//    
-//    // ********************************* (Create linear meshes: 2D) *******************************************
-//
-//    long num_divsi = 2; // number of divition
-//    REAL Lx = 1.0; // length of domain in x direction
-//    REAL Ly = 1.0; // length of domain in y direction
-//    
-//    TPZGeoMesh *gmesh_TwoDSimp = CreateTwoDSimpGMesh(num_divsi, Lx, Ly); // function to create the 2D geometric mesh
-//
-//    
-//    
-//    // ---------------------------------------------------------------------------------------
-//    
-//    long nnodes = 9; // Number of the nodes
-//    
-//    TPZGeoMesh *gmesh_TwoDTri = CreateTwoDTriGMesh(nnodes, Lx, Ly); // function to create the 2D geometric mesh
-//    
-//
-//    
-//    
-//    // ---------------------------------------------------------------------------------------
-//    
-//    long nnodesqu = 10; // number of divition
-//    
-//    TPZGeoMesh *gmesh_TwoDQuad = CreateTwoDQuadGMesh(nnodesqu, Lx, Ly); // function to create the 2D geometric mesh
-//    
-//
-//    
-//    // ****************************** (Create linear meshes: 3D) ********************************************
-//    
-//    REAL Lz = 1.0;
-//    long nnodesthr = 25; // number of divition
-//    
-//    TPZGeoMesh *gmesh_ThreeDHexPri = CreateThreeDHexPriGMesh(nnodesthr, Lx, Ly, Lz); // function to create the 3D geometric mesh
-//
-//    
-//    // ----------------------------------------------------------------------------------------
-//    
-//    long nnodesthrhpt = 12; // number of divition
-//    
-//    TPZGeoMesh *gmesh_ThreeDHexPrytet = CreateThreeDHexPrytetGMesh(nnodesthrhpt, Lx, Ly, Lz); // function to create the 3D geometric mesh
-//    
-//
-//    
-//    
-//    // *************************** (nonlinear elements) *****************************************************
-//    
-//    NonOneDElements();
-//    
-//    NonTwoDTriElements();
-//    NonTwoDQuadElements();
-//    
-//    NonThreeDTetraElements();
-//    NonThreeDPyraElements();
-//    NonThreeDPrisElements();
-//    NonThreeDHexaElements();
-//    
-//    
-//    // ----------------------------------------------------------------------------------------
-//    
-//    long nnodesthrehex = 20; // number of divition
-//    
-//    TPZGeoMesh *gmesh_NonThreeDHexa = CreateNonThreeDHexaGMesh(nnodesthrehex, Lx, Ly, Lz); // function to create the 3D geometric mesh
-//
-//    
-//    
-//    // ----------------------------------------------------------------------------------------
-//
-//    REAL Rad = 1.0;
-//    long nnodesarc = 9; // number of divition
-//    
-//    TPZGeoMesh *gmesh_ThreeDarc = CreateThreeDarcGMesh(nnodesarc, Rad); // function to create the 3D geometric mesh
-//    
-//
-//
-//
-////     ---------------------------------------  check shavad
-////    
-////    
-////    ThreeEllipsMeshGenerate();
-//
-//    
-//    // ************************************* (Finding nodes and elements) ********************************************
-//    
-//    REAL OneDdomain = 1.0;
-//    long num_elem = 20;
-//    REAL size_elem = OneDdomain/num_elem;
-//    
-//    TPZGeoMesh *gmesh_OneDFindNoEl = CreateOneDFindNoElGMesh(num_elem, size_elem); // function to create the 1D geometric mesh
+    
+    // ********************************* (linear elements) ******************************************************
+
+    ZeroDElements();
+    OneDElements();
+    
+    TwoDTriElements();
+    TwoDQuadElements();
+    
+    ThreeDTetraElements();
+    ThreeDPyraElements();
+    ThreeDPrisElements();
+    ThreeDHexaElements();
+    
+    
+    // ******************* (Create linear meshes: 1D) ***********************************************************
+    
+    REAL domain = 1.0;
+    long num_el = 10;
+    REAL size_el = domain/num_el;
+    
+    TPZGeoMesh *gmesh_OneDL = CreateOneDLGMesh(num_el, size_el); // function to create the 1D geometric mesh
+    
+
+
+    // ---------------------------------------------------------------------------------------
+    
+    
+    TPZGeoMesh *gmesh_OneDNL = CreateOneDNLGMesh(num_el, size_el); // function to create the 1D geometric mesh
+    
+
+    
+    // ********************************* (Create linear meshes: 2D) *******************************************
+
+    long num_divsi = 2; // number of divition
+    REAL Lx = 1.0; // length of domain in x direction
+    REAL Ly = 1.0; // length of domain in y direction
+    
+    TPZGeoMesh *gmesh_TwoDSimp = CreateTwoDSimpGMesh(num_divsi, Lx, Ly); // function to create the 2D geometric mesh
+
+    
+    
+    // ---------------------------------------------------------------------------------------
+    
+    long nnodes = 9; // Number of the nodes
+    
+    TPZGeoMesh *gmesh_TwoDTri = CreateTwoDTriGMesh(nnodes, Lx, Ly); // function to create the 2D geometric mesh
+    
+
+    
+    
+    // ---------------------------------------------------------------------------------------
+    
+    long nnodesqu = 10; // number of divition
+    
+    TPZGeoMesh *gmesh_TwoDQuad = CreateTwoDQuadGMesh(nnodesqu, Lx, Ly); // function to create the 2D geometric mesh
+    
+
+    
+    // ****************************** (Create linear meshes: 3D) ********************************************
+    
+    REAL Lz = 1.0;
+    long nnodesthr = 25; // number of divition
+    
+    TPZGeoMesh *gmesh_ThreeDHexPri = CreateThreeDHexPriGMesh(nnodesthr, Lx, Ly, Lz); // function to create the 3D geometric mesh
+
+    
+    // ----------------------------------------------------------------------------------------
+    
+    long nnodesthrhpt = 12; // number of divition
+    
+    TPZGeoMesh *gmesh_ThreeDHexPrytet = CreateThreeDHexPrytetGMesh(nnodesthrhpt, Lx, Ly, Lz); // function to create the 3D geometric mesh
+    
+
+    
+    
+    // *************************** (nonlinear elements) *****************************************************
+    
+    NonOneDElements();
+    
+    NonTwoDTriElements();
+    NonTwoDQuadElements();
+    
+    NonThreeDTetraElements();
+    NonThreeDPyraElements();
+    NonThreeDPrisElements();
+    NonThreeDHexaElements();
+    
+    
+    // ----------------------------------------------------------------------------------------
+    
+    long nnodesthrehex = 20; // number of divition
+    
+    TPZGeoMesh *gmesh_NonThreeDHexa = CreateNonThreeDHexaGMesh(nnodesthrehex, Lx, Ly, Lz); // function to create the 3D geometric mesh
+
+    
+    
+    // ----------------------------------------------------------------------------------------
+
+    REAL Rad = 1.0;
+    long nnodesarc = 9; // number of divition
+    
+    TPZGeoMesh *gmesh_ThreeDarc = CreateThreeDarcGMesh(nnodesarc, Rad); // function to create the 3D geometric mesh
+    
+
+
+
+//     ---------------------------------------  check shavad
 //    
 //    
+//    ThreeEllipsMeshGenerate();
+
+    
+    // ************************************* (Finding nodes and elements) ********************************************
+    
+    REAL OneDdomain = 1.0;
+    long num_elem = 20;
+    REAL size_elem = OneDdomain/num_elem;
+    
+    TPZGeoMesh *gmesh_OneDFindNoEl = CreateOneDFindNoElGMesh(num_elem, size_elem); // function to create the 1D geometric mesh
+    
+    
     // ------------------------------ finding the boundary element anc change the id
 //    long target_id = 100;
 //    
@@ -304,56 +304,56 @@ int main() {
 //    std::ofstream vtkgmeshOneDFindNoEl("geomesh_OneDFindNoElModified.vtk");
 //    TPZVTKGeoMesh::PrintGMeshVTK(gmesh_OneDFindNoEl, vtkgmeshOneDFindNoEl);
     
-//    // --------------------------- finding the jacobian of espeical element
-//    
-//    long target_index = 10;
-//    REAL z_modified = 1.0;
-//    TPZVec<REAL> x(3,0.0);
-//
-//    TPZVec<REAL> par_coordinate(3,0.0);
-//    TPZFMatrix<REAL> jacobian(3,3);
-//    TPZFMatrix<REAL> Axes(3,3);
-//    REAL detJacobian;
-//    REAL detJacobianSub;
-//    REAL detJacobianPlu;
-//
-//
-//    TPZFMatrix<REAL> InvJac(3,3);
-//    
-//    // -------------------- the element before the target index ------------
-//    
-//
-//    TPZGeoEl * elementTarget = gmesh_OneDFindNoEl->Element(target_index);
-//    int numnodes = elementTarget->NNodes();
-//    for (int i = 0; i < numnodes; i++)
-//    {
-//        TPZGeoNode & inode = elementTarget->Node(i);
-//        
-//        inode.GetCoordinates(x);
-//        x[2] = z_modified;
-//        inode.SetCoord(x);
-//
-//    }
-//    
-//    TPZManVector<REAL,3> x_1(3,0.0);
-//    elementTarget->X(par_coordinate, x_1);
-//    elementTarget->Jacobian(par_coordinate, jacobian, Axes, detJacobian, InvJac);
-//    
-//    TPZManVector<REAL,3> x_2(3,0.0);
-//    TPZGeoEl * elementTarSub = gmesh_OneDFindNoEl->Element(target_index-1);
-//    elementTarSub->X(par_coordinate, x_2);
-//    elementTarSub->Jacobian(par_coordinate, jacobian, Axes, detJacobianSub, InvJac);
-//    
-//    
-//    TPZManVector<REAL,3> x_3(3,0.0);
-//    TPZGeoEl * elementTarPlu = gmesh_OneDFindNoEl->Element(target_index+1);
-//    elementTarPlu->X(par_coordinate, x_3);
-//    elementTarPlu->Jacobian(par_coordinate, jacobian, Axes, detJacobianPlu, InvJac);
-//    
+    // --------------------------- finding the jacobian of espeical element
+    
+    long target_index = 10;
+    REAL z_modified = 1.0;
+    TPZVec<REAL> x(3,0.0);
+
+    TPZVec<REAL> par_coordinate(3,0.0);
+    TPZFMatrix<REAL> jacobian(3,3);
+    TPZFMatrix<REAL> Axes(3,3);
+    REAL detJacobian;
+    REAL detJacobianSub;
+    REAL detJacobianPlu;
+
+
+    TPZFMatrix<REAL> InvJac(3,3);
+    
+    // -------------------- the element before the target index ------------
+    
+
+    TPZGeoEl * elementTarget = gmesh_OneDFindNoEl->Element(target_index);
+    int numnodes = elementTarget->NNodes();
+    for (int i = 0; i < numnodes; i++)
+    {
+        TPZGeoNode & inode = elementTarget->Node(i);
+        
+        inode.GetCoordinates(x);
+        x[2] = z_modified;
+        inode.SetCoord(x);
+
+    }
+    
+    TPZManVector<REAL,3> x_1(3,0.0);
+    elementTarget->X(par_coordinate, x_1);
+    elementTarget->Jacobian(par_coordinate, jacobian, Axes, detJacobian, InvJac);
+    
+    TPZManVector<REAL,3> x_2(3,0.0);
+    TPZGeoEl * elementTarSub = gmesh_OneDFindNoEl->Element(target_index-1);
+    elementTarSub->X(par_coordinate, x_2);
+    elementTarSub->Jacobian(par_coordinate, jacobian, Axes, detJacobianSub, InvJac);
     
     
-//    
-//    
+    TPZManVector<REAL,3> x_3(3,0.0);
+    TPZGeoEl * elementTarPlu = gmesh_OneDFindNoEl->Element(target_index+1);
+    elementTarPlu->X(par_coordinate, x_3);
+    elementTarPlu->Jacobian(par_coordinate, jacobian, Axes, detJacobianPlu, InvJac);
+    
+    
+    
+    
+    
     
     return 0;
 }
