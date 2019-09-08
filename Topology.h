@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 
-void CheckTopology();
+void TopologyStudy();
 
 
 #endif /* Topology_h */

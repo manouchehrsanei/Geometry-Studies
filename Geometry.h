@@ -1,14 +1,14 @@
 //
-//  Geometry.hpp
+//  Geometry.h
 //  Geometry-Studies
 //
 //  Created by Manouchehr Sanei on 9/6/19.
 //
 //
 
-#ifndef Geometry_hpp
-#define Geometry_hpp
+#ifndef Geometry_h
+#define Geometry_h
 
 #include <stdio.h>
 
-#endif /* Geometry_hpp */
+#endif /* Geometry_h */

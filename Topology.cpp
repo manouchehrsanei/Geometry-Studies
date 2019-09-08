@@ -15,7 +15,6 @@
 #include "pzquad.h"
 
 #include "pztrnsform.h"
-#include "pzshapequad.h"
 
 
 
@@ -30,6 +29,18 @@
 #include "tpzpyramid.h"
 
 
+/// Type of shape
+
+#include "pzshapetriang.h"
+#include "pzshapequad.h"
+#include "pzshapelinear.h"
+#include "TPZShapeDisc.h"
+#include "pzshapetetra.h"
+#include "pzshapecube.h"
+#include "pzshapepiram.h"
+
+
+
 
 /// check
 
@@ -38,7 +49,7 @@
 
 
 
-void CheckTopology(){
+void TopologyStudy(){
     
     TPZVec<REAL> blob;
     blob.resize(3);
@@ -110,7 +121,7 @@ void CheckTopology(){
 //    
     
     /// Definition of a transformation index associated with a side.
-    int sid = 8;
+    int sid = 5;
     
     TPZVec<int64_t> id(4,0);
     id[0]=4;
@@ -118,15 +129,20 @@ void CheckTopology(){
     id[2]=2;
     id[3]=1;
     
-    int val = quad.GetTransformId(8, id);
+    int transf_id = quad.GetTransformId(sid, id);
     
     
-    
+    int nside = quad.NSides;
     
     /// Definition of the permutation index associated with the element.
     
-    TPZVec<int> permgather; // output variable
-//    quad.GetSideHDivPermutation(transf_id, permgather);
+    TPZVec<int> permgather(nside,0); // output variable
+    quad.GetSideHDivPermutation(transf_id, permgather);
+    
+        for (int i=0; i<nside; i++) {
+            std::cout<<"id "<<i<<":"<<permgather[i]<<std::endl;
+        }
+    
     
     ///  Relationship between sides: which sides are included in the closure of a side and orientation (note that the output variable is a stack object).
     
@@ -142,10 +158,14 @@ void CheckTopology(){
     
     
     int rib = 2;
-    TPZVec<REAL> in;
+    TPZVec<REAL> in(2,0.2);
     REAL out;
-//    pzshape::TPZShapeQuad::ProjectPoint2dQuadToRib(rib, in, out);
+    pzshape::TPZShapeQuad::ProjectPoint2dQuadToRib(rib, in, out);
+    std::cout << "Project point to quaderaterial = " << out << std::endl;
+
     
+    pzshape::TPZShapeTriang::ProjectPoint2dTriangToRib(rib, in, out);
+    std::cout << "Project point to triangle = " << out << std::endl;
     
     
     std::cout << std::endl;
